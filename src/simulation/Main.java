@@ -3,6 +3,7 @@ package simulation;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
+import simulation.input.KeyboardHandler;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -27,14 +28,18 @@ public class Main implements Runnable {
 	// The window handle
 	private long window;
 
-	// Starts the Display thread
+	/**
+	 * Starts the Display thread
+	 */
 	private synchronized void start() {
 		thread = new Thread(this, "Display");
 		thread.start();
 		stop();
 	}
 
-	//Stops the Display thread
+	/**
+	 * Stops the Display thread
+	 */
 	private synchronized void stop() {
 		try {
 			thread.join();
@@ -43,7 +48,9 @@ public class Main implements Runnable {
 		}
 	}
 
-	// Runs the simulation
+	/**
+	 * Runs the simulation. Called automaticly when the Display thread starts.
+	 */
 	public void run() {
 		System.out.println("Version: " + Version.getVersion());
 
@@ -63,6 +70,9 @@ public class Main implements Runnable {
 		}
 	}
 
+	/**
+	 * Initialises GLFW and OpenGL.
+	 */
 	private void init() {
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
@@ -84,13 +94,7 @@ public class Main implements Runnable {
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
 		// For now it just closes when escape is released.
-		glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-			@Override
-			public void invoke(long window, int key, int scancode, int action, int mods) {
-				if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-					glfwSetWindowShouldClose(window, GLFW_TRUE);
-			}
-		});
+		glfwSetKeyCallback(window, keyCallback = new KeyboardHandler());
 
 		// Get the resolution of the primary monitor
 		GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -106,6 +110,9 @@ public class Main implements Runnable {
 		glfwShowWindow(window);
 	}
 
+	/**
+	 * The game loop.
+	 */
 	private void loop() {
 		float delta;
 
@@ -130,22 +137,52 @@ public class Main implements Runnable {
 			// invoked during this call.
 			glfwPollEvents();
 
+			// Get input for the simulation
+			getInput();
+
+			// Update the simulation
 			update(delta);
 			Clock.updateFPS();
 
+			// Render the simulation
 			render();
 			Clock.updateUPS();
 
+			// Sets the winodw title
 			glfwSetWindowTitle(window, "Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS());
 		}
 	}
 
+	/**
+	 * Gets input for the simulation
+	 */
+	private void getInput() {
+		// If the escape key is pressed, close the simulation.
+		if (KeyboardHandler.isKeyDown(GLFW_KEY_ESCAPE))
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+
+	/**
+	 * Updates the simulation.
+	 *
+	 * @param delta The amount of time since the last update
+	 */
 	private void update(float delta) {
+
 	}
 
+	/**
+	 * Renders the simulation
+	 */
 	private void render() {
+
 	}
 
+	/**
+	 * The simulation's entry point.
+	 *
+	 * @param args not used
+	 */
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.start();
