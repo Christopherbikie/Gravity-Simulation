@@ -1,14 +1,7 @@
 package simulation;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.Version;
 import simulation.graphics.Display;
-import simulation.input.KeyboardHandler;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * Created by Christopher on 4/14/2016.
@@ -21,13 +14,6 @@ public class Main implements Runnable {
 
 	// Create thread
 	private Thread thread;
-
-	// We need to strongly reference callback instances.
-	private GLFWErrorCallback errorCallback;
-	private GLFWKeyCallback keyCallback;
-
-	// The window handle
-	private long window;
 
 	/**
 	 * Starts the Display thread
