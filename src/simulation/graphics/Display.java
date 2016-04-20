@@ -19,14 +19,28 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Display {
 
-	// The window width and height
-	private int width, height;
+	/**
+	 * The width of the window.
+	 */
+	private int width;
+	/**
+	 * The height of the window.
+	 */
+	private int height;
 
-	// We need to strongly reference callback instances.
+	/**
+	 * The error callback. Used for processing errors.
+	 */
 	private GLFWErrorCallback errorCallback;
+
+	/**
+	 * The keyboard callback. Used to process keystrokes.
+	 */
 	private GLFWKeyCallback keyCallback;
 
-	// The window handle
+	/**
+	 * The window handle
+	 */
 	private long window;
 
 	/**
@@ -40,6 +54,9 @@ public class Display {
 		this.height = height;
 	}
 
+	/**
+	 * Runs the display.
+	 */
 	public void run() {
 		try {
 			// Initialise GLFW, OpenGL and the window
@@ -134,17 +151,17 @@ public class Display {
 
 		// Prepare the shader
 		String vert =
-				"#version = 330\n" +
-						"in vec2 position;\n" +
-						"void main() {\n" +
-						"   gl_Position = vec4(position, 0.0f, 1.0f);\n" +
-						"}\n";
+				"#version 330\n" +
+				"in vec2 position;\n" +
+				"void main() {\n" +
+				"   gl_Position = vec4(position, 0.0f, 1.0f);\n" +
+				"}\n";
 		String frag =
 				"#version 330\n" +
-						"out vec4 out_color;\n" +
-						"void main() {\n" +
-						"   out_color = vec4(0.0f, 1.0f, 1.0f, 1.0f);\n" +
-						"}/n";
+				"out vec4 out_color;\n" +
+				"void main() {\n" +
+				"   out_color = vec4(0.0f, 1.0f, 1.0f, 1.0f);\n" +
+				"}\n";
 		// Creates a shader program and keeps a pointer to it as an int
 		int shader = createShaderProgram(new int[]{
 				GL20.GL_VERTEX_SHADER, GL20.GL_FRAGMENT_SHADER
@@ -210,7 +227,31 @@ public class Display {
 		}
 	}
 
-	int createShader(int shaderType, String shaderString) {
+	/**
+	 * Method to create a shader program from an array of shader types and shader code.
+	 *
+	 * @param shaderTypes The types of shaders
+	 * @param shaders The code for the shaders
+	 * @return An int pointing to the program object on the GPU
+	 */
+	private int createShaderProgram(int[] shaderTypes, String[] shaders) {
+		// Creates an array of shader IDs
+		int[] shaderIDs = new int[shaders.length];
+		// Creates a shader for every shader passed to the method
+		for (int i = 0; i < shaderIDs.length; i++)
+			shaderIDs[i] = createShader(shaderTypes[i], shaders[i]);
+		// Calls createShaderProgram with an array of shader IDs as a parameter and returns the program
+		return createShaderProgram(shaderIDs);
+	}
+
+	/**
+	 * Method to create a shader from a given type and string.
+	 *
+	 * @param shaderType The type of shader
+	 * @param shaderString The code for the shader
+	 * @return An int pointing to the shader object on the GPU
+	 */
+	private int createShader(int shaderType, String shaderString) {
 		// Creates a shader object in the GPU of the specified type.
 		// Creates a pointer as an int.
 		int shader = GL20.glCreateShader((shaderType));
@@ -224,7 +265,6 @@ public class Display {
 		// If the compilation was not successful, print the an error message
 		if (status == GL_FALSE) {
 			String error = GL20.glGetShaderInfoLog(shader);
-
 			String shaderTypeString = null;
 			switch (shaderType) {
 				case GL20.GL_VERTEX_SHADER:
@@ -237,7 +277,40 @@ public class Display {
 					shaderTypeString = "fragment";
 					break;
 			}
+			System.err.println("Compile failure in " + shaderTypeString + " shader:\n" + error);
 		}
+		// Return the created shader
+		return shader;
+	}
+
+	/**
+	 * Method to create a shader program given an array of shaders.
+	 *
+	 * @param shaders Array of shaders to be made into a program
+	 * @return The program made from the shaders
+	 */
+	private int createShaderProgram(int[] shaders) {
+		// Creates a program object in the GPU
+		int program = GL20.glCreateProgram();
+		// Attaches the shaders to the program so that OpenGL knows what constitutes our program.
+		for (int i = 0; i < shaders.length; i++)
+			GL20.glAttachShader(program, shaders[i]);
+		// Links the shaders we put in the program together so OpenGl knows which compiled
+		// shaders to run on each GPU when rendering with this program.
+		GL20.glLinkProgram(program);
+
+		// Checks if the shaders are linked together, and if not prints an error.
+		int status = GL20.glGetShaderi(program, GL20.GL_LINK_STATUS);
+		if (status == GL_FALSE) {
+			String error = GL20.glGetProgramInfoLog(program);
+			System.err.println("Linker failure: " + error);
+		}
+		// Detaches and deletes the shaders from the program.
+		for (int i = 0; i <shaders.length; i++) {
+			GL20.glDetachShader(program, shaders[i]);
+			GL20.glDeleteShader(shaders[i]);
+		}
+		return program;
 	}
 
 	/**
