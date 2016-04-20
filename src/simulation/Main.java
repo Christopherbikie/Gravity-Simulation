@@ -2,6 +2,7 @@ package simulation;
 
 import org.lwjgl.Version;
 import simulation.graphics.Display;
+import simulation.graphics.Simulation;
 
 /**
  * Created by Christopher on 4/14/2016.
@@ -41,7 +42,7 @@ public class Main implements Runnable {
 	public void run() {
 		System.out.println("Version: " + Version.getVersion());
 
-		Display display = new Display(WIDTH, HEIGHT);
+		Display display = new Simulation(WIDTH, HEIGHT);
 		display.run();
 	}
 
