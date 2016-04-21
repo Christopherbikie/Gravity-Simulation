@@ -13,9 +13,9 @@ public class FileLoader {
 		StringBuilder result = new StringBuilder();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
-			String buffer = "";
+			String buffer;
 			while ((buffer = reader.readLine()) != null)
-				result.append(buffer + '\n');
+				result.append(buffer).append('\n');
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();

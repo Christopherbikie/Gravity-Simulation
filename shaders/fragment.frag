@@ -1,10 +1,10 @@
 #version 330
 
-in vec2 tex_coord;
-out vec3 out_color;
+in vec3 exColour;
+
+out vec4 fragColor;
 
 void main()
 {
-    if (length(tex_coord - vec2(0.5, 0.5)) > 0.5) discard;
-    out_color = vec3(0.7, tex_coord);
+    fragColor = vec4(exColour, 1.0);
 }
