@@ -1,10 +1,9 @@
 package simulation.graphics;
 
-import simulation.Clock;
+import simulation.utils.Clock;
 import simulation.input.KeyboardHandler;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;

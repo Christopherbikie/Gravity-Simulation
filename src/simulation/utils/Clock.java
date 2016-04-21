@@ -1,4 +1,4 @@
-package simulation;
+package simulation.utils;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
@@ -92,10 +92,7 @@ public class Clock {
 	 * Pauses the Clock, makes <code>Delta()</code> return 0.
 	 */
 	public static void Pause() {
-		if (paused)
-			paused = false;
-		else
-			paused = true;
+		paused = !paused;
 	}
 
 	/**
