@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import simulation.Clock;
 import simulation.input.KeyboardHandler;
+import simulation.utils.FileLoader;
 
 import java.nio.FloatBuffer;
 
@@ -18,7 +19,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 public class Simulation extends Display {
 
 	private int glProgram;
-	private int glBuffer;
+	private int vbo;
 
 	/**
 	 * Constructor for the Simulation class.
@@ -37,25 +38,9 @@ public class Simulation extends Display {
 	@Override
 	protected void start() {
 		// Create vertex shader source
-		String SourceVertex =
-				"#version 330\n" +
-				"in vec2 corner;\n" +
-				"in vec2 position;\n" +
-				"out vec2 tex_coord;\n" +
-				"uniform vec2 zoom;\n" +
-				"void main() {\n" +
-				"    gl_Position = vec4(position * zoom, 0, 1);\n" +
-				"    tex_coord = corner;\n" +
-				"}\n";
+		String SourceVertex = FileLoader.loadAsString("shaders/vertex.vert");
 		// Create frag shader source
-		String sourceFragment =
-				"#version 330\n" +
-				"in vec2 tex_coord;\n" +
-				"out vec3 out_color;\n" +
-				"void main() {\n" +
-				"    if (length(tex_coord - vec2(0.5f, 0.5)) > 0.5) discard;\n" +
-				"    out_color = vec3(0.7, tex_coord);\n" +
-				"}\n";
+		String sourceFragment = FileLoader.loadAsString("shaders/fragment.frag");
 		// Create a new shader program using the sources we just made
 		glProgram = createShaderProgram(new int[] {
 				GL20.GL_VERTEX_SHADER, GL20.GL_FRAGMENT_SHADER
@@ -63,21 +48,21 @@ public class Simulation extends Display {
 				SourceVertex, sourceFragment
 		});
 		// Create a DataBuffer to put the data in. Position is at 0.
-		FloatBuffer shape = BufferUtils.createFloatBuffer(16);
+		FloatBuffer vertices = BufferUtils.createFloatBuffer(16);
 		// Put all the data in the buffer, position at the end of the data
 		// the sets the FloatBuffer to read
-		shape.put(new float[] {
+		vertices.put(new float[] {
 				0.9f,   -0.9f,  1, 0,
 				-0.9f,  -0.9f,  0, 0,
 				0.9f,   0.9f,   1, 1,
 				-0.9f,  0.9f,   0, 1,
 		}).flip();
-		// Sets glBuffer to be a pointer to a new Buffer on the GPU
-		glBuffer = GL15.glGenBuffers();
+		// Sets vbo to be a pointer to a new Buffer on the GPU
+		vbo = GL15.glGenBuffers();
 		// Binds the buffer
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, glBuffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		// Put our data in the buffer we are bound to
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, shape, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
 		// Unbind the buffer by binding to 0
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
@@ -98,7 +83,7 @@ public class Simulation extends Display {
 		// Clear colour buffer
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		// Binds the buffer
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, glBuffer);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		// Use the glShader program (which was created earlier)
 		GL20.glUseProgram(glProgram);
 
