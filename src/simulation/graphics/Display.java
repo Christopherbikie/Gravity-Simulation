@@ -10,6 +10,7 @@ import simulation.input.KeyboardHandler;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
@@ -51,7 +52,7 @@ public abstract class Display {
 	 */
 	protected long window;
 
-	private boolean resized = false;
+	public boolean resized = false;
 
 	/**
 	 * The time since the last update
@@ -87,6 +88,10 @@ public abstract class Display {
 			glfwDefaultWindowHints();
 			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 			// Create the window
 			window = glfwCreateWindow(WIDTH, HEIGHT, "Simulation", NULL, NULL);
@@ -97,17 +102,17 @@ public abstract class Display {
 			// For now it just closes when escape is released.
 			glfwSetKeyCallback(window, keyCallback = new KeyboardHandler());
 
+			// Create glfwWindowSizeCallback
+			glfwSetWindowSizeCallback(window, windowSizeCallback = GLFWWindowSizeCallback.create((window, width, height) -> {
+				WIDTH = width;
+				HEIGHT = height;
+				resized = true;
+			}));
+
 			// Get the resolution of the primary monitor
 			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			// Center our window
 			glfwSetWindowPos(window, (vidMode.width() - WIDTH) / 2, (vidMode.height() - HEIGHT) / 2);
-
-			// Create glfwWindowSizeCallback
-			glfwSetWindowSizeCallback(window, windowSizeCallback = GLFWWindowSizeCallback.create((window, width, height) -> {
-				resized = true;
-				WIDTH = width;
-				HEIGHT = height;
-			}));
 
 			// Make the OpenGL context current
 			glfwMakeContextCurrent(window);
@@ -121,13 +126,10 @@ public abstract class Display {
 			GL.createCapabilities();
 
 			// Start the display
-			start();
+			init();
 
 			// Run the rendering loop until the user has attempted to close the window.
 			while (glfwWindowShouldClose(window) == GL_FALSE) {
-				// If window has been resized, resize
-				if (resized)
-					resize();
 				// Update and render the display
 				tick();
 				// Swap the colour buffers
@@ -148,6 +150,9 @@ public abstract class Display {
 		}
 	}
 
+	/**
+	 * Corrects the viewport when resized
+	 */
 	private void resize() {
 		GL11.glViewport(0, 0, WIDTH, HEIGHT);
         aspectRatio = (float) HEIGHT / WIDTH;
@@ -164,12 +169,12 @@ public abstract class Display {
 	/**
 	 * Renders the simulation
 	 */
-	protected abstract void render(Mesh mesh);
+	protected abstract void render();
 
 	/**
 	 * Start the Display
 	 */
-	protected abstract void start();
+	protected abstract void init();
 
 	/**
 	 * Updates and renders

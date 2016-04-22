@@ -1,8 +1,12 @@
 package simulation.graphics;
 
+import simulation.entity.Entity;
+import simulation.entity.Test;
 import simulation.input.KeyboardHandler;
 import simulation.math.Matrix4f;
 import simulation.utils.Clock;
+
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -15,15 +19,9 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
  */
 public class Simulation extends Display {
 
-	private ShaderProgram shaderProgram;
+	private final Renderer renderer;
 
-	private static final float Z_NEAR = 0.01f;
-	private static final float Z_FAR = 1000.f;
-//    private static final float FOV = (float) Math.toRadians(60);
-
-    private Matrix4f projectionMatrix;
-
-	private Mesh mesh;
+	private Entity[] entities;
 
 	/**
 	 * Constructor for the Simulation class.
@@ -34,37 +32,40 @@ public class Simulation extends Display {
 	 */
 	public Simulation(int width, int height) {
 		super(width, height);
+		renderer = new Renderer();
 	}
 
 	/**
 	 * Start the Display
 	 */
 	@Override
-	protected void start() {
-		// Creates a new ShaderProgram
-		shaderProgram = new ShaderProgram("shaders/vertex.vert", "shaders/fragment.frag");
+	protected void init() {
+		renderer.init();
 
-        projectionMatrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * aspectRatio, 10.0f * aspectRatio, Z_NEAR, Z_FAR);
-//        projectionMatrix = Matrix4f.perspective(aspectRatio, FOV, Z_NEAR, Z_FAR);
-        shaderProgram.createUniform("projectionMatrix");
+		// Array of vertices and indices to make a square
+		float[] vertices = new float[]{
+				-0.5f,  0.5f,  0.5f,
+				-0.5f, -0.5f,  0.5f,
+				0.5f, -0.5f,  0.5f,
+				0.5f,  0.5f,  0.5f,
+		};
+		float[] colours = new float[]{
+				0.5f, 0.0f, 0.0f,
+				0.0f, 0.5f, 0.0f,
+				0.0f, 0.0f, 0.5f,
+				0.0f, 0.5f, 0.5f,
+		};
+		int[] indices = new int[]{
+				0, 1, 3, 3, 1, 2,
+		};
 
-        // Array of vertices and indices to make a square
-        float[] positions = new float[]{
-                -0.5f,  10.0f, -1.05f,
-                -0.5f, -0.5f, -1.05f,
-                0.5f, -0.5f, -1.05f,
-                0.5f,  0.5f, -1.05f,
-        };
-        float[] colours = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.0f, 0.5f, 0.5f,
-        };
-        int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,
-        };
-        mesh = new Mesh(positions, colours, indices);
+		// Create the Mesh
+		Mesh mesh = new Mesh(vertices, colours, indices);
+		Entity entity = new Entity(mesh);
+		entity.setPosition(0, 0, 2);
+		entity.setScale(10);
+		entity.setRotation(30);
+		entities = new Entity[] {entity};
     }
 
 	/**
@@ -81,7 +82,7 @@ public class Simulation extends Display {
 		getInput();
 		update(delta);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		render(mesh);
+		render();
 
 		// Sets the window title
 		glfwSetWindowTitle(window, "Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS());
@@ -103,31 +104,16 @@ public class Simulation extends Display {
 	 */
 	@Override
 	protected void update(float delta) {
+		for (Entity e : entities)
+			e.update(delta);
 	}
 
 	/**
 	 * Renders the simulation
 	 */
 	@Override
-	protected void render(Mesh mesh) {
-		// Clear colour buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Enable the shader program
-		shaderProgram.enable();
-        shaderProgram.setUniformMatrix4fv("projectionMatrix", projectionMatrix);
-
-        // Draw the mesh
-        glBindVertexArray(mesh.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-		// Restore state
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
-		shaderProgram.disable();
+	protected void render() {
+		renderer.render(this, entities);
 	}
 
     /**
@@ -135,10 +121,10 @@ public class Simulation extends Display {
 	 */
 	@Override
 	protected void cleanUp() {
-		if (shaderProgram != null)
-			shaderProgram.cleanUp();
+		renderer.cleanUp();
 
-		// Clean up mesh
-		mesh.cleanUp();
+		// Clean up meshes
+		for (Entity e : entities)
+			e.getMesh().cleanUp();
 	}
 }

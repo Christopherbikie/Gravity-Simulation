@@ -4,7 +4,8 @@ package simulation.math;
  * Created by Christopher on 4/19/2016.
  */
 public class Vector2f {
-	private float x, y;
+
+	public float x, y;
 
 	/**
 	 * Creates an instance of Vector2f with 0 magnitude.
@@ -41,7 +42,7 @@ public class Vector2f {
 	 * @return The result of the operation
 	 */
 	public Vector2f add(Vector2f vector) {
-		return new Vector2f(x + vector.getX(), y + vector.getY());
+		return new Vector2f(x + vector.x, y + vector.y);
 	}
 
 	/**
@@ -51,7 +52,7 @@ public class Vector2f {
 	 * @return The result of the operation
 	 */
 	public Vector2f sub(Vector2f vector) {
-		return new Vector2f(x - vector.getX(), y - vector.getY());
+		return new Vector2f(x - vector.x, y - vector.y);
 	}
 
 	/**
@@ -62,30 +63,19 @@ public class Vector2f {
 	 */
 	public Vector2f mul(float scalar) {
 		Vector2f result = new Vector2f();
-		result.setX(x * scalar);
-		result.setY(y * scalar);
+		result.x *= scalar;
+		result.y *= scalar;
 		return result;
 	}
 
-	public float getX() {
-		return x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	private void setX(float x) {
-		this.x = x;
-	}
-
-	private void setY(float y) {
-		this.y = y;
-	}
-
+	/**
+	 * Sets the vector to another Vector2f
+	 *
+	 * @param vector The Vector2f to bec set to
+	 */
 	public void set(Vector2f vector) {
-		this.x = vector.getX();
-		this.y = vector.getY();
+		this.x = vector.x;
+		this.y = vector.y;
 	}
 
 	/**
@@ -112,8 +102,8 @@ public class Vector2f {
 		result.append("    Y component: ").append(y).append("\n");
 		result.append("    Length: ").append(getLength()).append("\n");
 		result.append("    Unit Vector {\n");
-		result.append("        X component: ").append(unitVector.getX()).append("\n");
-		result.append("        Y component: ").append(unitVector.getY()).append("\n");
+		result.append("        X component: ").append(unitVector.x).append("\n");
+		result.append("        Y component: ").append(unitVector.y).append("\n");
 		result.append("        Length: ").append(unitVector.getLength()).append("\n    }\n}");
 
 		return result.toString();
