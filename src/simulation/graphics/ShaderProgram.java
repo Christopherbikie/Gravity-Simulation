@@ -1,6 +1,10 @@
 package simulation.graphics;
 
+import simulation.math.Matrix4f;
 import simulation.utils.FileLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -14,6 +18,8 @@ public class ShaderProgram {
 	private int vertexShaderID;
 	private int fragmentShaderID;
 
+	private final Map<String, Integer> uniforms;
+
 	/**
 	 * Creates a new shader program.
 	 *
@@ -21,6 +27,7 @@ public class ShaderProgram {
 	 * @param fragmentPath Path to the fragment shader
 	 */
 	public ShaderProgram(String vertexPath, String fragmentPath) {
+        uniforms = new HashMap<>();
 		// Create a new shader program
 		programID = glCreateProgram();
 
@@ -59,6 +66,29 @@ public class ShaderProgram {
 		glDeleteShader(fragmentShaderID);
 		glDeleteShader(vertexShaderID);
 	}
+
+    /**
+     * Creates a new uniform variable.
+     *
+     * @param uniformName The name for the new variable
+     */
+    public void createUniform(String uniformName) {
+        int uniformLocation = glGetUniformLocation(programID, uniformName);
+        if (uniformLocation < 0)
+            System.err.println("Could not find uniform \"" + uniformName + "\"");
+        else
+            uniforms.put(uniformName, uniformLocation);
+    }
+
+    /**
+     * Sets the uniform variable to a Matrix4f.
+     *
+     * @param uniformName The name of the uniform variable
+     * @param matrix The matrix to set the variable to
+     */
+    public void setUniformMatrix4fv(String uniformName, Matrix4f matrix) {
+        glUniformMatrix4fv(uniforms.get(uniformName), false, matrix.toFloatBuffer());
+    }
 
 	/**
 	 * Enable this shader

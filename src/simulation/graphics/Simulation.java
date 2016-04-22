@@ -1,12 +1,14 @@
 package simulation.graphics;
 
-import simulation.utils.Clock;
 import simulation.input.KeyboardHandler;
+import simulation.math.Matrix4f;
+import simulation.utils.Clock;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 /**
  * Created by Christopher on 20/04/2016.
@@ -14,6 +16,12 @@ import static org.lwjgl.opengl.GL30.*;
 public class Simulation extends Display {
 
 	private ShaderProgram shaderProgram;
+
+	private static final float Z_NEAR = 0.01f;
+	private static final float Z_FAR = 1000.f;
+//    private static final float FOV = (float) Math.toRadians(60);
+
+    private Matrix4f projectionMatrix;
 
 	private Mesh mesh;
 
@@ -36,24 +44,28 @@ public class Simulation extends Display {
 		// Creates a new ShaderProgram
 		shaderProgram = new ShaderProgram("shaders/vertex.vert", "shaders/fragment.frag");
 
-		// Array of vertices and indices to make a square
-		float[] positions = new float[]{
-				-0.5f,  0.5f, 0.0f,
-				-0.5f, -0.5f, 0.0f,
-				0.5f, -0.5f, 0.0f,
-				0.5f,  0.5f, 0.0f,
-		};
-		float[] colours = new float[]{
-				0.5f, 0.0f, 0.0f,
-				0.0f, 0.5f, 0.0f,
-				0.0f, 0.0f, 0.5f,
-				0.0f, 0.5f, 0.5f,
-		};
-		int[] indices = new int[]{
-				0, 1, 3, 3, 1, 2,
-		};
-		mesh = new Mesh(positions, colours, indices);
-	}
+        projectionMatrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * aspectRatio, 10.0f * aspectRatio, Z_NEAR, Z_FAR);
+//        projectionMatrix = Matrix4f.perspective(aspectRatio, FOV, Z_NEAR, Z_FAR);
+        shaderProgram.createUniform("projectionMatrix");
+
+        // Array of vertices and indices to make a square
+        float[] positions = new float[]{
+                -0.5f,  10.0f, -1.05f,
+                -0.5f, -0.5f, -1.05f,
+                0.5f, -0.5f, -1.05f,
+                0.5f,  0.5f, -1.05f,
+        };
+        float[] colours = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f,
+        };
+        int[] indices = new int[]{
+                0, 1, 3, 3, 1, 2,
+        };
+        mesh = new Mesh(positions, colours, indices);
+    }
 
 	/**
 	 * Updates and renders
@@ -68,6 +80,7 @@ public class Simulation extends Display {
 
 		getInput();
 		update(delta);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		render(mesh);
 
 		// Sets the window title
@@ -98,24 +111,26 @@ public class Simulation extends Display {
 	@Override
 	protected void render(Mesh mesh) {
 		// Clear colour buffer
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Enable the shader program
 		shaderProgram.enable();
+        shaderProgram.setUniformMatrix4fv("projectionMatrix", projectionMatrix);
 
-		// Draw the mesh
-		glBindVertexArray(mesh.getVaoID());
+        // Draw the mesh
+        glBindVertexArray(mesh.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
 		// Restore state
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 		shaderProgram.disable();
 	}
 
-	/**
+    /**
 	 * Cleans up OpenGL objects
 	 */
 	@Override

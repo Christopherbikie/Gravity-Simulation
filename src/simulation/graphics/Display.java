@@ -20,11 +20,16 @@ public abstract class Display {
 	/**
 	 * The width of the window.
 	 */
-	int WIDTH;
+	protected int WIDTH;
 	/**
 	 * The height of the window.
 	 */
-	int HEIGHT;
+	protected int HEIGHT;
+
+    /**
+     * The window's aspect ratio.
+     */
+	protected float aspectRatio;
 
 	/**
 	 * The error callback. Used for processing errors.
@@ -62,6 +67,7 @@ public abstract class Display {
 	public Display(int width, int height) {
 		this.WIDTH = width;
 		this.HEIGHT = height;
+        this.aspectRatio = (float) HEIGHT / WIDTH;
 	}
 
 	/**
@@ -144,6 +150,7 @@ public abstract class Display {
 
 	private void resize() {
 		GL11.glViewport(0, 0, WIDTH, HEIGHT);
+        aspectRatio = (float) HEIGHT / WIDTH;
 		resized = false;
 	}
 
