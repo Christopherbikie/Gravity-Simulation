@@ -1,18 +1,15 @@
 package simulation.graphics;
 
 import simulation.entity.Entity;
-import simulation.entity.Test;
+import simulation.entity.Planet;
+import simulation.entity.Star;
 import simulation.input.KeyboardHandler;
-import simulation.math.Matrix4f;
 import simulation.utils.Clock;
 
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL11.glClearColor;
 
 /**
  * Created by Christopher on 20/04/2016.
@@ -21,7 +18,7 @@ public class Simulation extends Display {
 
 	private final Renderer renderer;
 
-	private Entity[] entities;
+	private ArrayList<Entity> entities;
 
 	/**
 	 * Constructor for the Simulation class.
@@ -40,33 +37,19 @@ public class Simulation extends Display {
 	 */
 	@Override
 	protected void init() {
-		renderer.init();
+		renderer.init(this);
 
-		// Array of vertices and indices to make a square
-		float[] vertices = new float[]{
-				-0.5f,  0.5f,  0.5f,
-				-0.5f, -0.5f,  0.5f,
-				0.5f, -0.5f,  0.5f,
-				0.5f,  0.5f,  0.5f,
-		};
-		float[] colours = new float[]{
-				0.5f, 0.0f, 0.0f,
-				0.0f, 0.5f, 0.0f,
-				0.0f, 0.0f, 0.5f,
-				0.0f, 0.5f, 0.5f,
-		};
-		int[] indices = new int[]{
-				0, 1, 3, 3, 1, 2,
-		};
+		Entity star = new Star();
+		star.setPosition(0, 0);
+		star.setScale(1f);
+//		Entity planet = new Planet();
+//		planet.setPosition(-5, 0);
+//		planet.setScale(0.25f);
 
-		// Create the Mesh
-		Mesh mesh = new Mesh(vertices, colours, indices);
-		Entity entity = new Entity(mesh);
-		entity.setPosition(0, 0, 2);
-		entity.setScale(10);
-		entity.setRotation(30);
-		entities = new Entity[] {entity};
-    }
+		entities = new ArrayList<>();
+		entities.add(star);
+//		entities.add(planet);
+	}
 
 	/**
 	 * Updates and renders
@@ -121,7 +104,7 @@ public class Simulation extends Display {
 	 */
 	@Override
 	protected void cleanUp() {
-		renderer.cleanUp();
+		renderer.cleanUp(entities);
 
 		// Clean up meshes
 		for (Entity e : entities)

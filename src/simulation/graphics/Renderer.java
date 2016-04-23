@@ -3,6 +3,8 @@ package simulation.graphics;
 import simulation.entity.Entity;
 import simulation.math.Matrix4f;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -15,7 +17,7 @@ public class Renderer {
 
 	private Transformation transformation;
 
-	private ShaderProgram shaderProgram;
+	private Mesh background;
 
 	public Renderer() {
 		transformation = new Transformation();
@@ -24,13 +26,25 @@ public class Renderer {
 	/**
 	 * Initiate the renderer.
 	 */
-	public void init() {
-		// Creates a new ShaderProgram
-		shaderProgram = new ShaderProgram("shaders/vertex.vert", "shaders/fragment.frag");
-
-		// Create uniforms for world and projection matrices
-		shaderProgram.createUniform("projectionMatrix");
-		shaderProgram.createUniform("worldMatrix");
+	public void init(Display display) {
+		// Array of vertices and indices for the background
+		float[] vertices = new float[]{
+				-10.0f,  10.0f / display.WIDTH * display.HEIGHT, 10.0f,
+				-10.0f, -10.0f / display.WIDTH * display.HEIGHT, 10.0f,
+				10.0f, -10.0f / display.WIDTH * display.HEIGHT, 10.0f,
+				10.0f,  10.0f / display.WIDTH * display.HEIGHT, 10.0f,
+		};
+		float[] colours = new float[]{
+				1f, 1f, 0.0f,
+				1f, 1f, 0.0f,
+				1f, 1f, 0.0f,
+				1f, 1f, 0.0f,
+		};
+		int[] indices = new int[]{
+				0, 1, 3,
+				3, 1, 2,
+		};
+		background = new Mesh(vertices, colours, indices);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -38,10 +52,10 @@ public class Renderer {
 	/**
 	 * Render to the display.
 	 *
-	 * @param display The dislay to be rendered to
+	 * @param display The display to be rendered to
 	 * @param entities An array of entities to render
 	 */
-	public void render(Display display, Entity[] entities) {
+	public void render(Display display, ArrayList<Entity> entities) {
 		// Clear colour buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -51,35 +65,35 @@ public class Renderer {
 			display.resized = false;
 		}
 
-		// Bind the shader program
-		shaderProgram.enable();
-
 //		float fovx = (float) Math.toRadians(60);
 //		float fovy = fovx / display.WIDTH * display.HEIGHT;
 
 		// Update the projection Matrix
 		Matrix4f projectionMatrix = transformation.getProjectionMatrix(-10.0f, 10.0f, -10.0f * display.aspectRatio, 10.0f * display.aspectRatio, Z_NEAR, Z_FAR);
 //		Matrix4f projectionMatrix = transformation.getProjectionMatrix(fovx, fovy, Z_NEAR, Z_FAR);
-		shaderProgram.setUniformMatrix4fv("projectionMatrix", projectionMatrix);
+
+		ShaderProgram.bg.enable();
+		ShaderProgram.bg.setUniform2f("star", entities.get(0).getPosition2f().x / 10, entities.get(0).getPosition2f().y / 10);
+		ShaderProgram.bg.setUniformMatrix4fv("projectionMatrix", projectionMatrix);
+		ShaderProgram.bg.setUniform1f("scale", entities.get(0).getScale());
+		background.render();
+		ShaderProgram.bg.disable();
 
 		// Render each Entity
 		for (Entity e : entities) {
 			// Set world matrix for this Entity
 			Matrix4f worldMatrix = transformation.getWorldMatrix(e.getPosition3f(), e.getRotation(), e.getScale());
-			shaderProgram.setUniformMatrix4fv("worldMatrix", worldMatrix);
 			// Render the mesh for this entity
-			e.getMesh().render();
+			e.render(projectionMatrix, worldMatrix);
 		}
-
-		// Unbind the shader program
-		shaderProgram.disable();
 	}
 
 	/**
 	 * Clean up
 	 */
-	public void cleanUp() {
-		if (shaderProgram != null)
-			shaderProgram.cleanUp();
+	public void cleanUp(ArrayList<Entity> entities) {
+		ShaderProgram.bg.cleanUp();
+		for (Entity e : entities)
+			e.cleanUp();
 	}
 }

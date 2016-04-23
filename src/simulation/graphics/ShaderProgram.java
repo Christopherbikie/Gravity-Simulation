@@ -1,6 +1,7 @@
 package simulation.graphics;
 
 import simulation.math.Matrix4f;
+import simulation.math.Vector2f;
 import simulation.utils.FileLoader;
 
 import java.util.HashMap;
@@ -17,6 +18,21 @@ public class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+
+	public static ShaderProgram bg = new ShaderProgram("shaders/bg.vert", "shaders/bg.frag");
+	public static ShaderProgram star = new ShaderProgram("shaders/star.vert", "shaders/star.frag");
+	public static ShaderProgram planet = new ShaderProgram("shaders/planet.vert", "shaders/planet.frag");
+
+	static {
+		// Create uniforms for world and projection matrices
+		bg.createUniform("star");
+		bg.createUniform("projectionMatrix");
+		bg.createUniform("scale");
+		star.createUniform("projectionMatrix");
+		star.createUniform("worldMatrix");
+		planet.createUniform("projectionMatrix");
+		planet.createUniform("worldMatrix");
+	}
 
 	private final Map<String, Integer> uniforms;
 
@@ -89,6 +105,37 @@ public class ShaderProgram {
     public void setUniformMatrix4fv(String uniformName, Matrix4f matrix) {
         glUniformMatrix4fv(uniforms.get(uniformName), false, matrix.toFloatBuffer());
     }
+
+	/**
+	 * Sets a uniform variable to a Vector2f.
+	 *
+	 * @param uniformName The name of the uniform variable
+	 * @param vector The vector to set the variable to
+	 */
+	public void setUniform2f(String uniformName, Vector2f vector) {
+		glUniform2f(uniforms.get(uniformName), vector.x, vector.y);
+	}
+
+	/**
+	 * Sets a uniform variable to a Vector2f.
+	 *
+	 * @param uniformName The name of the uniform variable
+	 * @param x The x value
+	 * @param y The y value
+	 */
+	public void setUniform2f(String uniformName, float x, float y) {
+		glUniform2f(uniforms.get(uniformName), x, y);
+	}
+
+	/**
+	 * Sets a uniform variable to a float.
+	 *
+	 * @param uniformName The name of the uniform variable
+	 * @param f The float to set the variable to
+	 */
+	public void setUniform1f(String uniformName, float f) {
+		glUniform1f(uniforms.get(uniformName), f);
+	}
 
 	/**
 	 * Enable this shader
