@@ -1,0 +1,10 @@
+Sun texture: http://www.nasa.gov/mission_pages/stereo/news/6th-anniversary.html
+Mercury texture: http://messenger.jhuapl.edu/the_mission/mosaics.html
+Venus texture: http://laps.noaa.gov/albers/sos/sos.html
+Earth texture: http://earthobservatory.nasa.gov/Features/BlueMarble/BlueMarble_2002.php
+Mars texture: http://astrogeology.usgs.gov/search/details/Mars/Viking/MDIM21/Mars_Viking_MDIM21_ClrMosaic_global_232m/
+Jupiter texture: http://hubblesite.org/gallery/album/solar_system/pr2015037c/npp/128/
+Saturn texture: http://bjj.mmedia.is/data/saturn/index.html
+Uranus texture: http://planetpixelemporium.com/uranus.html
+Neptune: texture: http://bjj.mmedia.is/data/neptune/index.html
+Pluto texture: http://laps.noaa.gov/albers/sos/pluto/pluto_rgb_cyl_16k.png
