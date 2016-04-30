@@ -15,6 +15,11 @@ uniform float isLightSource;
 
 void main(void)
 {
+	if (isLightSource == 1) {
+	    out_Color = texture(modelTexture, pass_textureCoords);
+	    return;
+	}
+
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitLightVector = normalize(toLightVector);
 
@@ -31,9 +36,5 @@ void main(void)
 	float dampedFactor = pow(specularFactor,shineDamper);
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColour;
 
-//	if (isLightSource == 1) finalSpecular = lightColour;
-
 	out_Color =  vec4(diffuse,1.0) * texture(modelTexture, pass_textureCoords) + vec4(finalSpecular,1.0);
-
-	if (isLightSource == 1) out_Color = texture(modelTexture, pass_textureCoords);
 }
