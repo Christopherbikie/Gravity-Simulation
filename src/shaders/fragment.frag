@@ -11,6 +11,7 @@ uniform sampler2D modelTexture;
 uniform vec3 lightColour;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform float isLightSource;
 
 void main(void)
 {
@@ -25,11 +26,14 @@ void main(void)
 	vec3 lightDirection = -unitLightVector;
 	vec3 reflectedLightDirection = reflect(lightDirection,unitNormal);
 
-	float specularFactor = dot(reflectedLightDirection , unitVectorToCamera);
+	float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
 	specularFactor = max(specularFactor,0.0);
 	float dampedFactor = pow(specularFactor,shineDamper);
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColour;
 
+//	if (isLightSource == 1) finalSpecular = lightColour;
 
-	out_Color =  vec4(diffuse,1.0) * texture(modelTexture,pass_textureCoords) + vec4(finalSpecular,1.0);
+	out_Color =  vec4(diffuse,1.0) * texture(modelTexture, pass_textureCoords) + vec4(finalSpecular,1.0);
+
+	if (isLightSource == 1) out_Color = texture(modelTexture, pass_textureCoords);
 }

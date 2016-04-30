@@ -79,9 +79,10 @@ public class Renderer {
 	}
 
 	private void prepareInstance(Entity entity) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition3f(),
 				entity.getRotation().x, entity.getRotation().y, entity.getRotation().z, entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
+		shader.loadIsLightSource(entity.getType().isLightSource);
 	}
 
 	private void createProjectionMatrix() {

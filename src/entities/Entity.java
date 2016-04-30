@@ -2,6 +2,7 @@ package entities;
 
 import models.RawModel;
 import models.TexturedModel;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
 import renderEngine.OBJLoader;
@@ -12,6 +13,7 @@ import textures.ModelTexture;
  */
 public class Entity {
 
+	private EntityType type;
 	private TexturedModel model;
 	private Vector3f position;
 	private Vector3f scale;
@@ -40,24 +42,14 @@ public class Entity {
 		this.texturePath = texturePath;
 	}
 
-	public Entity(Entity entity, Vector3f position, Vector3f scale, Vector3f rotation) {
+	public Entity(EntityType type, Entity entity, Vector3f position, Vector3f scale, Vector3f rotation) {
+		this.type = type;
 		this.model = entity.getModel();
 		this.position = position;
 		this.rotation = rotation;
 		this.scale = scale;
 		this.modelPath = entity.getModelPath();
 		this.texturePath = entity.getTexturePath();
-	}
-
-	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ) {
-		new Entity(model, position, new Vector3f(1, 1, 1), rotX, rotY, rotZ);
-	}
-
-	public Entity(TexturedModel model, Vector3f position, Vector3f scale, float rotX, float rotY, float rotZ) {
-		this.model = model;
-		this.position = position;
-		this.rotation = rotation;
-		this.scale = scale;
 	}
 
 	public void increasePosition(Vector3f amount) {
@@ -70,6 +62,10 @@ public class Entity {
 		this.rotation.x += amount.x;
 		this.rotation.y += amount.y;
 		this.rotation.z += amount.z;
+	}
+
+	public EntityType getType() {
+		return type;
 	}
 
 	public String getModelPath() {
@@ -88,12 +84,21 @@ public class Entity {
 		this.model = model;
 	}
 
-	public Vector3f getPosition() {
+	public Vector3f getPosition3f() {
 		return position;
+	}
+
+	public Vector2f getPosition2f() {
+		return new Vector2f(position.x, position.y);
 	}
 
 	public void setPosition(Vector3f position) {
 		this.position = position;
+	}
+
+	public void setPosition(Vector2f position) {
+		this.position.x = position.x;
+		this.position.y = position.y;
 	}
 
 	public Vector3f getRotation() {

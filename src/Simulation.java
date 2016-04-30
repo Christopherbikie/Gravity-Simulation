@@ -1,5 +1,6 @@
 import entities.Camera;
 import entities.Entity;
+import entities.EntityType;
 import entities.Light;
 import models.RawModel;
 import models.TexturedModel;
@@ -25,30 +26,16 @@ public class Simulation {
 
 		List<Entity> entities = new ArrayList<>();
 
-		Entity sun = new Entity(Entity.sun, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity sun = new Entity(EntityType.Star, Entity.sun, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
 		entities.add(sun);
-		Entity mercury = new Entity(Entity.mercury, new Vector3f(2, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(mercury);
-		Entity venus = new Entity(Entity.venus, new Vector3f(4, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(venus);
-		Entity earth = new Entity(Entity.earth, new Vector3f(6, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(6, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
 		entities.add(earth);
-		Entity mars = new Entity(Entity.mars, new Vector3f(8, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity mars = new Entity(EntityType.Planet, Entity.mars, new Vector3f(0, 0, 6), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
 		entities.add(mars);
-		Entity jupiter = new Entity(Entity.jupiter, new Vector3f(10, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(jupiter);
-		Entity saturn = new Entity(Entity.saturn, new Vector3f(12, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(saturn);
-		Entity uranus = new Entity(Entity.uranus, new Vector3f(14, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(uranus);
-		Entity neptune = new Entity(Entity.neptune, new Vector3f(16, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(neptune);
-		Entity pluto = new Entity(Entity.pluto, new Vector3f(18, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(pluto);
 
 		System.out.println(earth.toString());
 
-		Light light = new Light(new Vector3f(-20, 0, 0), new Vector3f(1, 1, 1));
+		Light light = new Light(sun.getPosition3f(), new Vector3f(1, 1, 0.8f));
 
 		Camera camera = new Camera(new Vector3f(0, 50, 0), 90, 0, 0);
 
