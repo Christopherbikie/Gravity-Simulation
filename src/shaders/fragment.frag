@@ -36,5 +36,5 @@ void main(void)
 	float dampedFactor = pow(specularFactor,shineDamper);
 	vec3 finalSpecular = dampedFactor * reflectivity * lightColour;
 
-	out_Color =  vec4(diffuse,1.0) * texture(modelTexture, pass_textureCoords) + vec4(finalSpecular,1.0);
+	out_Color =  (vec4(diffuse,1.0) + 0.02) * texture(modelTexture, pass_textureCoords) + vec4(finalSpecular,1.0);
 }
