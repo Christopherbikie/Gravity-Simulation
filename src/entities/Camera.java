@@ -8,14 +8,27 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class Camera {
 
+	/**
+	 * Vector for the camera's position
+	 */
 	private Vector3f position = new Vector3f(0, 0, 0);
+	/**
+	 * Floats for the camera's rotation  in degrees
+	 */
 	private float pitch, yaw, roll;
+	/**
+	 * Float for the camera's speed
+	 */
 	private float speed = 0.1f;
 
-	public Camera() {
-
-	}
-
+	/**
+	 * Constructor for the camera.
+	 *
+	 * @param position The position for the camera to start at
+	 * @param pitch The camera's pitch in degrees
+	 * @param yaw The camera's yaw in degrees
+	 * @param roll The camera's roll in degrees
+	 */
 	public Camera(Vector3f position, float pitch, float yaw, float roll) {
 		this.position = position;
 		this.pitch = pitch;
@@ -23,6 +36,9 @@ public class Camera {
 		this.roll = roll;
 	}
 
+	/**
+	 * Move the camera according to user keyboard input
+	 */
 	public void move() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			position.x -= (float) (Math.sin(-yaw * Math.PI / 180) * speed);

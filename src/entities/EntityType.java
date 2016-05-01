@@ -6,6 +6,9 @@ package entities;
 public enum EntityType {
 	Star(true), Planet(false);
 
+	/**
+	 * True if the entity is a light source, false if it is not.
+	 */
 	public boolean isLightSource;
 
 	EntityType(boolean isLightSource) {

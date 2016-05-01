@@ -7,7 +7,14 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class Light {
 
+	/**
+	 * The light's position
+	 */
 	private Vector3f position;
+	/**
+	 * The light's colour
+	 * Vector values should be red, green then blue.
+	 */
 	private Vector3f colour;
 
 	public Light(Vector3f position, Vector3f colour) {

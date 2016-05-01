@@ -13,11 +13,29 @@ import textures.ModelTexture;
  */
 public class Entity {
 
+	/**
+	 * The type of entity eg planet, star...
+	 */
 	private EntityType type;
+	/**
+	 * The entity's model
+	 */
 	private TexturedModel model;
+	/**
+	 * The entity's position
+	 */
 	private Vector3f position;
+	/**
+	 * The entity's scale (size)
+	 */
 	private Vector3f scale;
+	/**
+	 * The entity's rotation
+	 */
 	private Vector3f rotation;
+	/**
+	 * The path to the entity's model and texture
+	 */
 	private String modelPath, texturePath;
 
 	public static Entity sun = new Entity("obj/sphere4096", "textures/star");
@@ -31,8 +49,16 @@ public class Entity {
 	public static Entity neptune = new Entity("obj/sphere4096", "textures/neptune");
 	public static Entity pluto = new Entity("obj/sphere4096", "textures/pluto");
 
+	/**
+	 * Create a new entity using a path to the entity's model and texture
+	 *
+	 * @param modelPath Path to the OBJ model
+	 * @param texturePath Path to the PNG image
+	 */
 	public Entity(String modelPath, String texturePath) {
+		// Create a new loader
 		Loader loader = new Loader();
+		// Load the entity's model using the OBJ file loader
 		RawModel model = OBJLoader.loadObjModel(modelPath, loader);
 		this.model = new TexturedModel(model, new ModelTexture(loader.loadTexture(texturePath)));
 		ModelTexture texture = this.model.getTexture();
@@ -42,6 +68,15 @@ public class Entity {
 		this.texturePath = texturePath;
 	}
 
+	/**
+	 * Create a new Entity based off a entity already created and adding a type, position, scale and rotation
+	 *
+	 * @param type The type of entity to create
+	 * @param entity The entity to extract the model from
+	 * @param position The position for the new entity
+	 * @param scale The scale for the new entity
+	 * @param rotation The rotation for the new entity in degrees
+	 */
 	public Entity(EntityType type, Entity entity, Vector3f position, Vector3f scale, Vector3f rotation) {
 		this.type = type;
 		this.model = entity.getModel();
@@ -52,12 +87,22 @@ public class Entity {
 		this.texturePath = entity.getTexturePath();
 	}
 
+	/**
+	 * Increase the entity's position
+	 *
+	 * @param amount Amount to increase the entities position by
+	 */
 	public void increasePosition(Vector3f amount) {
 		this.position.x += amount.x;
 		this.position.y += amount.y;
 		this.position.z += amount.z;
 	}
 
+	/**
+	 * Increase the entity's rotation
+	 *
+	 * @param amount Amount to rotate in degrees
+	 */
 	public void increaseRotation(Vector3f amount) {
 		this.rotation.x += amount.x;
 		this.rotation.y += amount.y;
@@ -123,15 +168,19 @@ public class Entity {
 		this.scale.z = scale;
 	}
 
+	/**
+	 * Returns a string representation of the entity
+	 *
+	 * @return A string representation of the entity
+	 */
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Entity {");
-		sb.append("\n    model: ").append(getModelPath());
-		sb.append("\n    texture: ").append(getTexturePath());
-		sb.append("\n    position: ").append(position.toString());
-		sb.append("\n    rotation: ").append(rotation.toString());
-		sb.append("\n    scale: ").append(scale.toString());
-		sb.append("\n}");
-		return  sb.toString();
+		return "Entity {" +
+				"\n    type: " + getType() +
+				"\n    model: " + getModelPath() +
+				"\n    texture: " + getTexturePath() +
+				"\n    position: " + position.toString() +
+				"\n    rotation: " + rotation.toString() +
+				"\n    scale: " + scale.toString() +
+				"\n}";
 	}
 }
