@@ -16,11 +16,26 @@ import java.util.Map;
  */
 public class MasterRenderer {
 
+	/**
+	 * Create a StaticShader
+	 */
 	private StaticShader shader = new StaticShader();
+	/**
+	 * Create a Renderer
+	 */
 	private Renderer renderer = new Renderer(shader);
 
+	/**
+	 * A HashMap containing the models, and the entities using that model.
+	 */
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<>();
 
+	/**
+	 * Renders a object to the screen.
+	 *
+	 * @param sun The light source.
+	 * @param camera The camera from which we are viewing
+	 */
 	public void render(Light sun, Camera camera) {
 		renderer.prepare();
 		shader.start();
@@ -31,6 +46,13 @@ public class MasterRenderer {
 		entities.clear();
 	}
 
+	/**
+	 * Adds an entity to the entities HashMap.
+	 * If an entity using the same model already exists, add the entity to that models list of entitys.
+	 * Otherwise, add the model and the entity as a new entry.
+	 *
+	 * @param entity The entity to add to the array.
+	 */
 	public void processEntity(Entity entity) {
 		TexturedModel entityModel = entity.getModel();
 		List<Entity> batch = entities.get(entityModel);
@@ -43,6 +65,9 @@ public class MasterRenderer {
 		}
 	}
 
+	/**
+	 * Clean up the shaders.
+	 */
 	public void cleanUp() {
 		shader.cleanUp();
 	}

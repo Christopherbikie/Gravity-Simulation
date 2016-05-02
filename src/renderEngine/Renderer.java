@@ -24,13 +24,33 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
  */
 public class Renderer {
 
+	/**
+	 * Field Of View in degrees.
+	 */
 	private static final float FOV = 70;
+	/**
+	 * Closest distance to camera to be rendered.
+	 */
 	private static final float NEAR_PLANE = 0.1f;
+	/**
+	 * Furthest distance from camera to be rendered.
+	 */
 	private static final float FAR_PLANE = 1000;
 
+	/**
+	 * The projection matrix.
+	 */
 	private Matrix4f projectionMatrix;
+	/**
+	 * The shader
+	 */
 	private StaticShader shader;
 
+	/**
+	 * Constructor for the renderer.
+	 *
+	 * @param shader The shader to use
+	 */
 	public Renderer(StaticShader shader) {
 		this.shader = shader;
 		glEnable(GL_CULL_FACE);
@@ -41,12 +61,22 @@ public class Renderer {
 		shader.stop();
 	}
 
+	/**
+	 * Prepare for rendering.
+	 * Enables depth test, clears colour and depth buffers and resets the clear colour.
+	 */
 	public void prepare() {
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 1);
 	}
 
+	/**
+	 * Prepares then renders a HashMap of Textured models and Entities.
+	 *
+	 * @param entities HashMap of entities to be rendered.
+	 *                 Entities should be grouped by TexturedModel.
+	 */
 	public void render(Map<TexturedModel, List<Entity>> entities) {
 		for (TexturedModel model : entities.keySet()) {
 			prepareTextureModel(model);
@@ -59,6 +89,11 @@ public class Renderer {
 		}
 	}
 
+	/**
+	 * Prepares a TexturedModel for rendering.
+	 *
+	 * @param model The TexturedModel to prepare.
+	 */
 	private void prepareTextureModel(TexturedModel model) {
 		RawModel rawModel = model.getRawModel();
 		glBindVertexArray(rawModel.getVaoID());
@@ -71,6 +106,9 @@ public class Renderer {
 		glBindTexture(GL_TEXTURE_2D, model.getTexture().getTextureID());
 	}
 
+	/**
+	 * Disables all vertex attribute arrays and unbinds the vertex array.
+	 */
 	private void unbindTexturedModel() {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -78,6 +116,11 @@ public class Renderer {
 		glBindVertexArray(0);
 	}
 
+	/**
+	 * Prepares an entity for rendering.
+	 *
+	 * @param entity The Entity to prepare.
+	 */
 	private void prepareInstance(Entity entity) {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition3f(),
 				entity.getRotation().x, entity.getRotation().y, entity.getRotation().z, entity.getScale());
@@ -85,6 +128,9 @@ public class Renderer {
 		shader.loadIsLightSource(entity.getType().isLightSource);
 	}
 
+	/**
+	 * Creates a perspective projection matrix.
+	 */
 	private void createProjectionMatrix() {
 		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV/2f))) * aspectRatio);

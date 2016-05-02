@@ -17,6 +17,15 @@ import java.util.Objects;
  */
 public class OBJLoader {
 
+	/**
+	 * Load an OBJ model file.
+	 *
+	 * @param fileName The path and file name of the object to load.
+	 *                 The file must be in the res directory or one of it's subdirectories.
+	 *                 Format: "path/filename" (Do not add "res/" or ".obj".
+	 * @param loader A loader to load the file with.
+	 * @return The RawModel loaded from the file.
+	 */
 	public static RawModel loadObjModel(String fileName, Loader loader) {
 		FileReader fr = null;
 		try {
