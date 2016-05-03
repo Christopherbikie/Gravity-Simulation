@@ -7,6 +7,7 @@ import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
+import util.Clock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class Simulation {
 
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
+			Clock.update();
 			// Rotate all the entities
 			for (Entity entity : entities) {
 				entity.increaseRotation(new Vector3f(0, 0.05f, 0));

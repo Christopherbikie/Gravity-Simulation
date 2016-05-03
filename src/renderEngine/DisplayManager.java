@@ -5,6 +5,7 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
+import util.Clock;
 
 import static org.lwjgl.opengl.GL11.glViewport;
 
@@ -39,7 +40,7 @@ public class DisplayManager {
 			// Create the window
 			Display.create(new PixelFormat(), attribs);
 			// Set the display's title
-			Display.setTitle("3DGameEngine");
+			Display.setTitle("Gravity Simulation");
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
@@ -54,6 +55,8 @@ public class DisplayManager {
 	public static void updateDisplay() {
 		// Sync the display to our frame rate
 		Display.sync(FPS_CAP);
+		// Set the display's title
+		Display.setTitle("Gravity Simulation :: FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS());
 		// Update the display
 		Display.update();
 	}
