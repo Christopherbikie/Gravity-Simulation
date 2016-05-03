@@ -34,10 +34,8 @@ public class Simulation {
 		// Populate the list with new entities.
 		Entity sun = new Entity(EntityType.Star, Entity.sun, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
 		entities.add(sun);
-		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(6, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(10, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
 		entities.add(earth);
-		Entity mars = new Entity(EntityType.Planet, Entity.mars, new Vector3f(0, 0, 6), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
-		entities.add(mars);
 
 		// Create a light source at the location of the sun
 		Light light = new Light(sun.getPosition3f(), new Vector3f(1, 1, 0.8f));
