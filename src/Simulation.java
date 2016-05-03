@@ -2,15 +2,11 @@ import entities.Camera;
 import entities.Entity;
 import entities.EntityType;
 import entities.Light;
-import models.RawModel;
-import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
-import renderEngine.OBJLoader;
-import textures.ModelTexture;
 
 import java.util.ArrayList;
 import java.util.List;

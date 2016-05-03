@@ -5,7 +5,7 @@ import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
-import renderEngine.OBJLoader;
+import util.OBJLoader;
 import textures.ModelTexture;
 
 /**
