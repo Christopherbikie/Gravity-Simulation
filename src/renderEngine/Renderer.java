@@ -7,7 +7,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import shaders.StaticShader;
 import textures.ModelTexture;
-import toolbox.Maths;
+import maths.Maths;
 
 import java.util.List;
 import java.util.Map;

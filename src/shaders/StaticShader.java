@@ -3,7 +3,7 @@ package shaders;
 import entities.Camera;
 import entities.Light;
 import org.lwjgl.util.vector.Matrix4f;
-import toolbox.Maths;
+import maths.Maths;
 
 /**
  * Created by Christopher on 23/04/2016.
