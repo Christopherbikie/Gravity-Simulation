@@ -56,9 +56,32 @@ public class DisplayManager {
 		// Sync the display to our frame rate
 		Display.sync(FPS_CAP);
 		// Set the display's title
-		Display.setTitle("Gravity Simulation :: FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS());
+		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Speed: " + getMultiplier());
 		// Update the display
 		Display.update();
+	}
+
+	private static String getMultiplier() {
+		float multiplier = Clock.getMultiplier();
+		float amount;
+		String unit;
+		if (multiplier < 60) {
+			amount = multiplier;
+			unit = " seconds per second";
+		} else if (multiplier > 60 && multiplier < 3600) {
+			amount = multiplier / 60;
+			unit = " minutes / second";
+		} else if (multiplier > 3600 && multiplier < 86400) {
+			amount = multiplier / 3600;
+			unit = " hours / second";
+		} else if (multiplier > 86400 && multiplier < 31536000) {
+			amount = multiplier / 86400;
+			unit = " days / second";
+		} else {
+			amount = multiplier / 31536000;
+			unit = " years / second";
+		}
+		return amount + unit;
 	}
 
 	/**
