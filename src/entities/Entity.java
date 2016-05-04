@@ -1,5 +1,6 @@
 package entities;
 
+import maths.Physics;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
@@ -7,6 +8,8 @@ import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
 import util.OBJLoader;
 import textures.ModelTexture;
+
+import java.util.List;
 
 /**
  * Created by Christopher on 24/04/2016.
@@ -22,6 +25,10 @@ public class Entity {
 	 */
 	private TexturedModel model;
 	/**
+	 * The entity's mass
+	 */
+	private double mass;
+	/**
 	 * The entity's position
 	 */
 	private Vector3f position;
@@ -34,20 +41,24 @@ public class Entity {
 	 */
 	private Vector3f rotation;
 	/**
+	 * The entity's velocity
+	 */
+	private float xVelocity = 0;
+	/**
 	 * The path to the entity's model and texture
 	 */
 	private String modelPath, texturePath;
 
 	public static Entity sun = new Entity("obj/sphere4096", "textures/star");
-	public static Entity mercury = new Entity("obj/sphere4096", "textures/mercury");
-	public static Entity venus = new Entity("obj/sphere4096", "textures/venus");
+//	public static Entity mercury = new Entity("obj/sphere4096", "textures/mercury");
+//	public static Entity venus = new Entity("obj/sphere4096", "textures/venus");
 	public static Entity earth = new Entity("obj/sphere4096", "textures/earth");
-	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
-	public static Entity jupiter = new Entity("obj/sphere4096", "textures/jupiter");
-	public static Entity saturn = new Entity("obj/sphere4096", "textures/saturn");
-	public static Entity uranus = new Entity("obj/sphere4096", "textures/uranus");
-	public static Entity neptune = new Entity("obj/sphere4096", "textures/neptune");
-	public static Entity pluto = new Entity("obj/sphere4096", "textures/pluto");
+//	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
+//	public static Entity jupiter = new Entity("obj/sphere4096", "textures/jupiter");
+//	public static Entity saturn = new Entity("obj/sphere4096", "textures/saturn");
+//	public static Entity uranus = new Entity("obj/sphere4096", "textures/uranus");
+//	public static Entity neptune = new Entity("obj/sphere4096", "textures/neptune");
+//	public static Entity pluto = new Entity("obj/sphere4096", "textures/pluto");
 
 	/**
 	 * Create a new entity using a path to the entity's model and texture
@@ -109,6 +120,28 @@ public class Entity {
 		this.rotation.z += amount.z;
 	}
 
+	public void update(float delta, List<Entity> entities) {
+		double mass2 = entities.get(0).getMass();
+		double force = Physics.getForce(mass, mass2, position.x);
+		if (position.x > entities.get(0).getPosition2f().x)
+			force *= -1;
+		if (force > 5e24)
+			force = 5e24;
+		if (force < -5e24)
+			force = -5e24;
+		double acceleration = Physics.getAcceleration(force, mass);
+		xVelocity += acceleration * delta;
+		position.x += xVelocity * delta / Physics.METERS_PER_AU;
+
+		System.out.println("force: " + force);
+		System.out.println("acceleration: " + acceleration);
+		System.out.println("xVelocity: " + xVelocity);
+		System.out.println("position: " + position.x);
+		System.out.println();
+		if (position.x < entities.get(0).getPosition2f().x)
+			System.out.println("The thing happened");
+	}
+
 	public EntityType getType() {
 		return type;
 	}
@@ -127,6 +160,14 @@ public class Entity {
 
 	public void setModel(TexturedModel model) {
 		this.model = model;
+	}
+
+	public double getMass() {
+		return mass;
+	}
+
+	public void setMass(double mass) {
+		this.mass = mass;
 	}
 
 	public Vector3f getPosition3f() {

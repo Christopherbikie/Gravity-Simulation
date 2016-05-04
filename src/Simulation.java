@@ -32,16 +32,18 @@ public class Simulation {
 		List<Entity> entities = new ArrayList<>();
 
 		// Populate the list with new entities.
-		Entity sun = new Entity(EntityType.Star, Entity.sun, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity sun = new Entity(EntityType.Star, Entity.sun, new Vector3f(0, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
+		sun.setMass(1.9885e+30);
 		entities.add(sun);
-		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(10, 0, 0), new Vector3f(1, 1, 1), new Vector3f(0, 0, 0));
+		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(1, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
+		earth.setMass(5.9723e+24);
 		entities.add(earth);
 
 		// Create a light source at the location of the sun
 		Light light = new Light(sun.getPosition3f(), new Vector3f(1, 1, 0.8f));
 
 		// Create a camera i.e. the point from which we observe the simulation
-		Camera camera = new Camera(new Vector3f(0, 50, 0), 90, 0, 0);
+		Camera camera = new Camera(new Vector3f(0, 10, 0), 90, 0, 0);
 
 		// Create a renderer
 		MasterRenderer renderer = new MasterRenderer();
@@ -49,6 +51,7 @@ public class Simulation {
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
 			Clock.update();
+			earth.update(Clock.Delta(), entities);
 			// Rotate all the entities
 			for (Entity entity : entities) {
 				entity.increaseRotation(new Vector3f(0, 0.05f, 0));

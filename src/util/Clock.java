@@ -1,6 +1,7 @@
 package util;
 
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 
 public class Clock {
 	private static boolean paused = false;
@@ -56,6 +57,13 @@ public class Clock {
 	 * Updates the clock. Must be run every loop.
 	 */
 	public static void update() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD))
+			changeMultiplier(1.1f);
+		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
+			changeMultiplier(0.9f);
+		if (Keyboard.isKeyDown(Keyboard.KEY_P) && Keyboard.getEventKeyState())
+			pause();
+
 		d = getDelta();
 		timeCount += d;
 
@@ -93,7 +101,7 @@ public class Clock {
 	/**
 	 * Pauses the Clock, makes <code>Delta()</code> return 0.
 	 */
-	public static void Pause() {
+	public static void pause() {
 		paused = !paused;
 	}
 
