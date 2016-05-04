@@ -1,5 +1,6 @@
 package entities;
 
+import maths.Maths;
 import maths.Physics;
 import models.RawModel;
 import models.TexturedModel;
@@ -43,7 +44,7 @@ public class Entity {
 	/**
 	 * The entity's velocity
 	 */
-	private float xVelocity = 0;
+	private Vector2f velocity = new Vector2f(0, 0);
 	/**
 	 * The path to the entity's model and texture
 	 */
@@ -110,6 +111,16 @@ public class Entity {
 	}
 
 	/**
+	 * Increase the entity's position
+	 *
+	 * @param amount Amount to increase the entities position by
+	 */
+	public void increasePosition(Vector2f amount) {
+		this.position.x += amount.x;
+		this.position.y += amount.y;
+	}
+
+	/**
 	 * Increase the entity's rotation
 	 *
 	 * @param amount Amount to rotate in degrees
@@ -122,24 +133,13 @@ public class Entity {
 
 	public void update(float delta, List<Entity> entities) {
 		double mass2 = entities.get(0).getMass();
-		double force = Physics.getForce(mass, mass2, position.x);
-		if (position.x > entities.get(0).getPosition2f().x)
-			force *= -1;
-		if (force > 5e24)
-			force = 5e24;
-		if (force < -5e24)
-			force = -5e24;
-		double acceleration = Physics.getAcceleration(force, mass);
-		xVelocity += acceleration * delta;
-		position.x += xVelocity * delta / Physics.METERS_PER_AU;
+		Vector2f force = Physics.getForce(mass, mass2, getPosition2f(), entities.get(0).getPosition2f());
+		Vector2f acceleration = Physics.getAcceleration(force, mass);
+		velocity.x += acceleration.x * delta;
+		velocity.y += acceleration.y * delta;
 
-		System.out.println("force: " + force);
-		System.out.println("acceleration: " + acceleration);
-		System.out.println("xVelocity: " + xVelocity);
-		System.out.println("position: " + position.x);
-		System.out.println();
-		if (position.x < entities.get(0).getPosition2f().x)
-			System.out.println("The thing happened");
+		position.x += velocity.x * delta / Physics.METERS_PER_AU;
+		position.z += velocity.y * delta / Physics.METERS_PER_AU;
 	}
 
 	public EntityType getType() {
@@ -175,7 +175,7 @@ public class Entity {
 	}
 
 	public Vector2f getPosition2f() {
-		return new Vector2f(position.x, position.y);
+		return new Vector2f(position.x, position.z);
 	}
 
 	public void setPosition(Vector3f position) {
@@ -184,7 +184,15 @@ public class Entity {
 
 	public void setPosition(Vector2f position) {
 		this.position.x = position.x;
-		this.position.y = position.y;
+		this.position.z = position.y;
+	}
+
+	public Vector2f getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector2f velocity) {
+		this.velocity = velocity;
 	}
 
 	public Vector3f getRotation() {

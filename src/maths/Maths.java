@@ -2,6 +2,7 @@ package maths;
 
 import entities.Camera;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -49,5 +50,14 @@ public class Maths {
 		Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
+	}
+
+	public static Vector2f divide(Vector2f left, float divisor, Vector2f dest) {
+		if (dest == null)
+			return new Vector2f(left.x / divisor, left.y / divisor);
+		else {
+			dest.set(left.x / divisor, left.y / divisor);
+			return dest;
+		}
 	}
 }

@@ -3,6 +3,7 @@ import entities.Entity;
 import entities.EntityType;
 import entities.Light;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -35,8 +36,9 @@ public class Simulation {
 		Entity sun = new Entity(EntityType.Star, Entity.sun, new Vector3f(0, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
 		sun.setMass(1.9885e+30);
 		entities.add(sun);
-		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(1, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
+		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(-1, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
 		earth.setMass(5.9723e+24);
+		earth.setVelocity(new Vector2f(0, -29781));
 		entities.add(earth);
 
 		// Create a light source at the location of the sun
