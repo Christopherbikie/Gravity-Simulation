@@ -45,7 +45,7 @@ public class Simulation {
 		Light light = new Light(sun.getPosition3f(), new Vector3f(1, 1, 0.8f));
 
 		// Create a camera i.e. the point from which we observe the simulation
-		Camera camera = new Camera(new Vector3f(0, 10, 0), 90, 0, 0);
+		Camera camera = new Camera(new Vector3f(0, 5, 0), 90, 0, 0);
 
 		// Create a renderer
 		MasterRenderer renderer = new MasterRenderer();

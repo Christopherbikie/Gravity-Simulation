@@ -7,6 +7,8 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 import util.Clock;
 
+import java.text.DecimalFormat;
+
 import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
@@ -56,15 +58,43 @@ public class DisplayManager {
 		// Sync the display to our frame rate
 		Display.sync(FPS_CAP);
 		// Set the display's title
-		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Speed: " + getMultiplier());
+		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Time: " + getTime() + " | Speed: " + getMultiplier());
 		// Update the display
 		Display.update();
 	}
 
+	/**
+	 * Returns the time since the simulation started as a String
+	 * Format: #y ###d ##:##:##
+	 *
+	 * @return the current time since the simulation started
+	 */
+	private static String getTime() {
+		// Create number formats for two and three digits
+		DecimalFormat twoDigits = new DecimalFormat("#00");
+		DecimalFormat threeDigits = new DecimalFormat("#000");
+		// Get the current time
+		double time = Clock.getTotalTime();
+		// Format and return the time
+		return String.valueOf((long) time / 31536000) + "y " +
+				threeDigits.format((long) time / 86400 % 365) + "d " +
+				twoDigits.format((long) time / 3600 % 24) + ':' +
+				twoDigits.format((long) time / 60 % 60) + ':' +
+				twoDigits.format((long) (time % 60));
+	}
+
+	/**
+	 * Get the current multiplier as a formatted String.
+	 *
+	 * @return the current multiplier
+	 */
 	private static String getMultiplier() {
+		// Get the current multiplier
 		float multiplier = Clock.getMultiplier();
+		// Create variables for the unit and amount.
 		float amount;
 		String unit;
+		// Get the unit based on the size of the multiplier and adjust the amount accordingly
 		if (multiplier < 60) {
 			amount = multiplier;
 			unit = " seconds per second";

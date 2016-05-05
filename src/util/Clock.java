@@ -5,9 +5,10 @@ import org.lwjgl.input.Keyboard;
 
 public class Clock {
 	private static boolean paused = false;
-	public static long lastFrame;
-	public static float d = 0, multiplier = 1, timeCount = 0;
-	public static int fps, fpsCount, ups, upsCount;
+	private static long lastFrame;
+	private static float d = 0, multiplier = 1, timeCount = 0;
+	private static double totalTime = 0;
+	private static int fps, fpsCount, ups, upsCount;
 
 	/**
 	 * Returns time since <code>glfwInit()</code> in milliseconds.
@@ -66,6 +67,7 @@ public class Clock {
 
 		d = getDelta();
 		timeCount += d;
+		totalTime += d * multiplier;
 
 		if (timeCount > 1) {
 			fps = fpsCount;
@@ -135,5 +137,14 @@ public class Clock {
 	 */
 	public static int getUPS() {
 		return ups > 0 ? ups : upsCount;
+	}
+
+	/**
+	 * Get the time since the simulation started.
+	 *
+	 * @return Time since the simulation started
+	 */
+	public static double getTotalTime() {
+		return totalTime;
 	}
 }
