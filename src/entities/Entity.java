@@ -131,13 +131,25 @@ public class Entity {
 		this.rotation.z += amount.z;
 	}
 
+	/**
+	 * Update the entity's position.
+	 *
+	 * @param delta Time since the last update
+	 * @param entities Array of all current entities in the universe.
+	 */
 	public void update(float delta, List<Entity> entities) {
+		// Mass of the second object
 		double mass2 = entities.get(0).getMass();
+		// Calculate the force between this and the second object
 		Vector2f force = Physics.getForce(mass, mass2, getPosition2f(), entities.get(0).getPosition2f());
+		// Calculate the acceleration between the object
 		Vector2f acceleration = Physics.getAcceleration(force, mass);
+
+		// Increase the velocity vector
 		velocity.x += acceleration.x * delta;
 		velocity.y += acceleration.y * delta;
 
+		// Increase the position of the entity
 		position.x += velocity.x * delta / Physics.METERS_PER_AU;
 		position.z += velocity.y * delta / Physics.METERS_PER_AU;
 	}
