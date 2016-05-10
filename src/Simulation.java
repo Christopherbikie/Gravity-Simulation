@@ -37,7 +37,7 @@ public class Simulation {
 		sun.setMass(1.9885e+30);
 		entities.add(sun);
 		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(-1, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
-		earth.setMass(5.9723e+24);
+		earth.setMass(5.9723e+24 );
 		earth.setVelocity(new Vector2f(0, -29781));
 		earth.setRotationPeriod(86400);
 		entities.add(earth);
@@ -55,7 +55,10 @@ public class Simulation {
 		while (!Display.isCloseRequested()) {
 			float delta = Clock.Delta();
 			Clock.update();
-			earth.update(delta, entities);
+			// Update all the entities positions and rotations
+			for (Entity entity : entities) {
+				entity.update(delta, entities);
+			}
 			// Move the camera according to user input
 			camera.move();
 			// Prepare all the entities for rendering

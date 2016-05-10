@@ -135,20 +135,30 @@ public class Entity {
 	}
 
 	/**
-	 * Updates the planet's position & rotation
+	 * Updates the entities's position & rotation
 	 *
 	 * @param delta Time since last update in seconds
 	 * @param entities List of all entities to interact with
 	 */
 	public void update(float delta, List<Entity> entities) {
-		double mass2 = entities.get(0).getMass();
-		Vector2f force = Physics.getForce(mass, mass2, getPosition2f(), entities.get(0).getPosition2f());
-		Vector2f acceleration = Physics.getAcceleration(force, mass);
-		velocity.x += acceleration.x * delta;
-		velocity.y += acceleration.y * delta;
+		// Update the entity's position
+		// Iterate through list of entities and calculate the force, acceleration and movement towards the entity
+		for (Entity entity : entities) {
+			// If the current entity is this entity, skip to the next in the list
+			if (entity == this) continue;
 
-		position.x += velocity.x * delta / Physics.METERS_PER_AU;
-		position.z += velocity.y * delta / Physics.METERS_PER_AU;
+			// Get the force towards the current entity
+			Vector2f force = Physics.getForce(mass, entity.getMass(), getPosition2f(), entity.getPosition2f());
+			// Get the acceleration towards the current entity
+			Vector2f acceleration = Physics.getAcceleration(force, mass);
+			// Change this entity's velocity based off the acceleration and time passed
+			velocity.x += acceleration.x * delta;
+			velocity.y += acceleration.y * delta;
+
+			// Change this entity's position based off it's velocity and the time passed, converting from meters to AU
+			position.x += velocity.x * delta / Physics.METERS_PER_AU;
+			position.z += velocity.y * delta / Physics.METERS_PER_AU;
+		}
 
 		// If the rotation period has been set, rotate
 		if (rotationPeriod != 0)
