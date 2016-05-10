@@ -1,6 +1,5 @@
 package entities;
 
-import maths.Maths;
 import maths.Physics;
 import models.RawModel;
 import models.TexturedModel;
@@ -29,6 +28,10 @@ public class Entity {
 	 * The entity's mass
 	 */
 	private double mass;
+	/**
+	 * Time in seconds for the object to complete one rotation on it's axis
+	 */
+	private int rotationPeriod;
 	/**
 	 * The entity's position
 	 */
@@ -131,6 +134,12 @@ public class Entity {
 		this.rotation.z += amount.z;
 	}
 
+	/**
+	 * Updates the planet's position & rotation
+	 *
+	 * @param delta Time since last update in seconds
+	 * @param entities List of all entities to interact with
+	 */
 	public void update(float delta, List<Entity> entities) {
 		double mass2 = entities.get(0).getMass();
 		Vector2f force = Physics.getForce(mass, mass2, getPosition2f(), entities.get(0).getPosition2f());
@@ -140,6 +149,10 @@ public class Entity {
 
 		position.x += velocity.x * delta / Physics.METERS_PER_AU;
 		position.z += velocity.y * delta / Physics.METERS_PER_AU;
+
+		// If the rotation period has been set, rotate
+		if (rotationPeriod != 0)
+			increaseRotation(new Vector3f(0, (360f / rotationPeriod) * delta, 0));
 	}
 
 	public EntityType getType() {
@@ -215,6 +228,14 @@ public class Entity {
 		this.scale.x = scale;
 		this.scale.y = scale;
 		this.scale.z = scale;
+	}
+
+	public int getRotationPeriod() {
+		return rotationPeriod;
+	}
+
+	public void setRotationPeriod(int rotationPeriod) {
+		this.rotationPeriod = rotationPeriod;
 	}
 
 	/**

@@ -39,6 +39,7 @@ public class Simulation {
 		Entity earth = new Entity(EntityType.Planet, Entity.earth, new Vector3f(-1, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
 		earth.setMass(5.9723e+24);
 		earth.setVelocity(new Vector2f(0, -29781));
+		earth.setRotationPeriod(86400);
 		entities.add(earth);
 
 		// Create a light source at the location of the sun
@@ -52,12 +53,9 @@ public class Simulation {
 
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
+			float delta = Clock.Delta();
 			Clock.update();
-			earth.update(Clock.Delta(), entities);
-			// Rotate all the entities
-			for (Entity entity : entities) {
-				entity.increaseRotation(new Vector3f(0, 0.05f, 0));
-			}
+			earth.update(delta, entities);
 			// Move the camera according to user input
 			camera.move();
 			// Prepare all the entities for rendering
