@@ -42,7 +42,7 @@ public class Camera {
 	 * Move the camera according to user keyboard input
 	 */
 	public void move() {
-		float delta = Clock.Delta();
+		float delta = Clock.deltaWithoutMultiplier();
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			position.x -= (float) (Math.sin(-yaw * Math.PI / 180) * speed * delta);
 			position.z -= (float) (Math.cos(-yaw * Math.PI / 180) * speed * delta);

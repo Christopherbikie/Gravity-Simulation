@@ -22,7 +22,7 @@ public class Clock {
 	/**
 	 * Used to calculate the delta, without taking the multiplier or pause state into account.
 	 *
-	 * @return Delta in milliseconds
+	 * @return delta in milliseconds
 	 */
 	private static float getDelta() {
 		long currentTime = getTime();
@@ -36,13 +36,25 @@ public class Clock {
 	/**
 	 * Returns the time since the last update, times the multiplier.
 	 *
-	 * @return Delta in milliseconds
+	 * @return delta in milliseconds
 	 */
-	public static float Delta() {
+	public static float delta() {
 		if (paused)
 			return 0;
 		else
 			return d * multiplier;
+	}
+
+	/**
+	 * Returns the time since the last update, without the multiplier.
+	 *
+	 * @return delta in milliseconds
+	 */
+	public static float deltaWithoutMultiplier() {
+		if (paused)
+			return 0;
+		else
+			return d;
 	}
 
 	/**
@@ -101,7 +113,7 @@ public class Clock {
 	}
 
 	/**
-	 * Pauses the Clock, makes <code>Delta()</code> return 0.
+	 * Pauses the Clock, makes <code>delta()</code> return 0.
 	 */
 	public static void pause() {
 		paused = !paused;
