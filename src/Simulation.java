@@ -41,6 +41,11 @@ public class Simulation {
 		earth.setVelocity(new Vector2f(0, -29781));
 		earth.setRotationPeriod(86400);
 		entities.add(earth);
+		Entity mars = new Entity(EntityType.Planet, Entity.mars, new Vector3f(-1.527f, 0, 0), new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(0, 0, 0));
+		mars.setMass(6.4171e+23);
+		mars.setVelocity(new Vector2f(0, -24132));
+		mars.setRotationPeriod(88920);
+		entities.add(mars);
 
 		// Create a light source at the location of the sun
 		Light light = new Light(sun.getPosition3f(), new Vector3f(1, 1, 0.8f));

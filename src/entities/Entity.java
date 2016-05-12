@@ -57,7 +57,7 @@ public class Entity {
 //	public static Entity mercury = new Entity("obj/sphere4096", "textures/mercury");
 //	public static Entity venus = new Entity("obj/sphere4096", "textures/venus");
 	public static Entity earth = new Entity("obj/sphere4096", "textures/earth");
-//	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
+	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
 //	public static Entity jupiter = new Entity("obj/sphere4096", "textures/jupiter");
 //	public static Entity saturn = new Entity("obj/sphere4096", "textures/saturn");
 //	public static Entity uranus = new Entity("obj/sphere4096", "textures/uranus");
@@ -154,11 +154,11 @@ public class Entity {
 			// Change this entity's velocity based off the acceleration and time passed
 			velocity.x += acceleration.x * delta;
 			velocity.y += acceleration.y * delta;
-
-			// Change this entity's position based off it's velocity and the time passed, converting from meters to AU
-			position.x += velocity.x * delta / Physics.METERS_PER_AU;
-			position.z += velocity.y * delta / Physics.METERS_PER_AU;
 		}
+
+		// Change this entity's position based off it's velocity and the time passed, converting from meters to AU
+		position.x += velocity.x * delta / Physics.METERS_PER_AU;
+		position.z += velocity.y * delta / Physics.METERS_PER_AU;
 
 		// If the rotation period has been set, rotate
 		if (rotationPeriod != 0)
