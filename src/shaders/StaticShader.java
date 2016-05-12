@@ -10,8 +10,8 @@ import maths.Maths;
  */
 public class StaticShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "src/shaders/vertex.vert";
-	private static final String FRAGMENT_FILE = "src/shaders/fragment.frag";
+	private static final String VERTEX_FILE = "/shaders/vertex.vert";
+	private static final String FRAGMENT_FILE = "/shaders/fragment.frag";
 
 	private int transformationMatrixLocation;
 	private int projectionMatrixLocation;

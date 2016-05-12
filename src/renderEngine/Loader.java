@@ -83,7 +83,7 @@ public class Loader {
 
 		// Load the texture. If the file is not found, print the stack trace.
 		try {
-			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
+			texture = TextureLoader.getTexture("PNG", Class.class.getResourceAsStream(fileName + ".png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

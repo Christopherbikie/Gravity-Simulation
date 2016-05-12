@@ -53,16 +53,16 @@ public class Entity {
 	 */
 	private String modelPath, texturePath;
 
-	public static Entity sun = new Entity("obj/sphere4096", "textures/star");
-//	public static Entity mercury = new Entity("obj/sphere4096", "textures/mercury");
-//	public static Entity venus = new Entity("obj/sphere4096", "textures/venus");
-	public static Entity earth = new Entity("obj/sphere4096", "textures/earth");
-	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
-//	public static Entity jupiter = new Entity("obj/sphere4096", "textures/jupiter");
-//	public static Entity saturn = new Entity("obj/sphere4096", "textures/saturn");
-//	public static Entity uranus = new Entity("obj/sphere4096", "textures/uranus");
-//	public static Entity neptune = new Entity("obj/sphere4096", "textures/neptune");
-//	public static Entity pluto = new Entity("obj/sphere4096", "textures/pluto");
+	public static Entity sun = new Entity("/obj/sphere4096", "/textures/star");
+//	public static Entity mercury = new Entity("/obj/sphere4096", "/textures/mercury");
+//	public static Entity venus = new Entity("/obj/sphere4096", "/textures/venus");
+	public static Entity earth = new Entity("/obj/sphere4096", "/textures/earth");
+	public static Entity mars = new Entity("/obj/sphere4096", "/textures/mars");
+//	public static Entity jupiter = new Entity("/obj/sphere4096", "/textures/jupiter");
+//	public static Entity saturn = new Entity("/obj/sphere4096", "/textures/saturn");
+//	public static Entity uranus = new Entity("/obj/sphere4096", "/textures/uranus");
+//	public static Entity neptune = new Entity("/obj/sphere4096", "/textures/neptune");
+//	public static Entity pluto = new Entity("/obj/sphere4096", "/textures/pluto");
 
 	/**
 	 * Create a new entity using a path to the entity's model and texture
