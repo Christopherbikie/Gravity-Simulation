@@ -143,6 +143,7 @@ public class Entity {
 	public void update(float delta, List<Entity> entities) {
 		// Update the entity's position
 		// Iterate through list of entities and calculate the force, acceleration and movement towards the entity
+		Vector2f oldVelocity = velocity;
 		for (Entity entity : entities) {
 			// If the current entity is this entity, skip to the next in the list
 			if (entity == this) continue;
@@ -157,8 +158,8 @@ public class Entity {
 		}
 
 		// Change this entity's position based off it's velocity and the time passed, converting from meters to AU
-		position.x += velocity.x * delta / Physics.METERS_PER_AU;
-		position.z += velocity.y * delta / Physics.METERS_PER_AU;
+		position.x += (velocity.x + oldVelocity.x) / 2 * delta / Physics.METERS_PER_AU;
+		position.z += (velocity.y + oldVelocity.y) / 2 * delta / Physics.METERS_PER_AU;
 
 		// If the rotation period has been set, rotate
 		if (rotationPeriod != 0)
