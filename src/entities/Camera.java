@@ -18,10 +18,6 @@ public class Camera {
 	 * Floats for the camera's rotation  in degrees
 	 */
 	private float pitch, yaw, roll;
-	/**
-	 * Float for the camera's speed
-	 */
-	private float speed = 1f;
 
 	/**
 	 * Constructor for the camera.
@@ -42,7 +38,11 @@ public class Camera {
 	 * Move the camera according to user keyboard input
 	 */
 	public void move() {
+		// Get the time since the last frame
+		// Do not take the speed of time into account
 		float delta = Clock.deltaWithoutMultiplier();
+		// Make speed proportional to the distance from the y plane
+		float speed = Math.abs(position.y) + 1;
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			position.x -= (float) (Math.sin(-yaw * Math.PI / 180) * speed * delta);
 			position.z -= (float) (Math.cos(-yaw * Math.PI / 180) * speed * delta);
