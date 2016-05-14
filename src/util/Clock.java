@@ -70,14 +70,15 @@ public class Clock {
 	 * Updates the clock. Must be run every loop.
 	 */
 	public static void update() {
+		d = getDelta();
+
 		if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD))
-			changeMultiplier(1.1f);
+			changeMultiplier(1 + d * 2);
 		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
-			changeMultiplier(0.9f);
+			changeMultiplier(1 - d * 2);
 		if (Keyboard.isKeyDown(Keyboard.KEY_P) && Keyboard.getEventKeyState())
 			pause();
 
-		d = getDelta();
 		timeCount += d;
 		totalTime += d * multiplier;
 
@@ -90,8 +91,6 @@ public class Clock {
 
 			timeCount -= 1f;
 		}
-		updateFPS();
-		updateUPS();
 	}
 
 	/**

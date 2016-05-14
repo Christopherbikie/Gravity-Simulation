@@ -73,13 +73,13 @@ public class Camera {
 			pitch -= angleChange;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
-			pitch -= 1f;
+			pitch -= 60f * delta;
 		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-			pitch += 1f;
+			pitch += 60f * delta;
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
-			yaw -= 1f;
+			yaw -= 60f * delta;
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-			yaw += 1f;
+			yaw += 60f * delta;
 	}
 
 	public Vector3f getPosition() {
