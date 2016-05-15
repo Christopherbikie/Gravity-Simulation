@@ -43,25 +43,25 @@ public class Camera {
 		float delta = Clock.deltaWithoutMultiplier();
 		// Make speed proportional to the distance from the y plane
 		float speed = Math.abs(position.y) + 1;
-		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_W)) {
 			position.x -= (float) (Math.sin(-yaw * Math.PI / 180) * speed * delta);
 			position.z -= (float) (Math.cos(-yaw * Math.PI / 180) * speed * delta);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_S)) {
 			position.x += (float) (Math.sin(-yaw * Math.PI / 180) * speed * delta);
 			position.z += (float) (Math.cos(-yaw * Math.PI / 180) * speed * delta);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_A)) {
 			position.x += (float) (Math.sin((-yaw - 90) * Math.PI / 180) * speed * delta);
 			position.z += (float) (Math.cos((-yaw - 90) * Math.PI / 180) * speed * delta);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_D)) {
 			position.x += (float) (Math.sin((-yaw + 90) * Math.PI / 180) * speed * delta);
 			position.z += (float) (Math.cos((-yaw + 90) * Math.PI / 180) * speed * delta);
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_SPACE))
 			position.y += speed * delta;
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_LSHIFT))
 			position.y -= speed * delta;
 
 		if (Mouse.isButtonDown(0)) {
@@ -72,13 +72,13 @@ public class Camera {
 			float angleChange = Mouse.getDY() * 0.1f;
 			pitch -= angleChange;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_UP))
 			pitch -= 60f * delta;
-		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_DOWN))
 			pitch += 60f * delta;
-		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_LEFT))
 			yaw -= 60f * delta;
-		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_RIGHT))
 			yaw += 60f * delta;
 	}
 

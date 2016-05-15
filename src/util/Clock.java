@@ -72,15 +72,16 @@ public class Clock {
 	public static void update() {
 		d = getDelta();
 
-		if (Keyboard.isKeyDown(Keyboard.KEY_PERIOD))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_PERIOD))
 			changeMultiplier(1 + d * 2);
-		if (Keyboard.isKeyDown(Keyboard.KEY_COMMA))
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_COMMA))
 			changeMultiplier(1 - d * 2);
-		if (Keyboard.isKeyDown(Keyboard.KEY_P) && Keyboard.getEventKeyState())
+		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_P) && Keyboard.getEventKeyState())
 			pause();
 
 		timeCount += d;
-		totalTime += d * multiplier;
+		if (!paused)
+			totalTime += d * multiplier;
 
 		if (timeCount > 1) {
 			fps = fpsCount;
