@@ -11,9 +11,9 @@ public class Clock {
 	private static int fps, fpsCount, ups, upsCount;
 
 	/**
-	 * Returns time since <code>glfwInit()</code> in milliseconds.
+	 * Returns the system time in milliseconds.
 	 *
-	 * @return time since <code>glfwInit()</code> in milliseconds
+	 * @return the system time in milliseconds
 	 */
 	public static long getTime() {
 		return Sys.getTime() * 1000 / Sys.getTimerResolution();
@@ -70,8 +70,10 @@ public class Clock {
 	 * Updates the clock. Must be run every loop.
 	 */
 	public static void update() {
+		// Set d to the time since the last frame
 		d = getDelta();
 
+		// Get input for time speed and pausing
 		if (input.Keyboard.getKeyDown(Keyboard.KEY_PERIOD))
 			changeMultiplier(1 + d * 2);
 		if (input.Keyboard.getKeyDown(Keyboard.KEY_COMMA))
@@ -79,10 +81,12 @@ public class Clock {
 		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_P) && Keyboard.getEventKeyState())
 			pause();
 
+		// Add delta to counters
 		timeCount += d;
 		if (!paused)
 			totalTime += d * multiplier;
 
+		// Update UPS and FPS counters
 		if (timeCount > 1) {
 			fps = fpsCount;
 			fpsCount = 0;

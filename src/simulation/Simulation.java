@@ -22,7 +22,6 @@ import java.util.List;
 public class Simulation {
 
 	public static boolean drawTrails = false;
-	private static boolean tPressed = false;
 
 	/**
 	 * The program's entry point, this method is executed when the simulation is run.
@@ -85,10 +84,9 @@ public class Simulation {
 		input.Keyboard.update();
 		// Move the camera
 		camera.move();
-		tPressed = false;
+		// Check if trails should be drawn
 		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T)) {
 			drawTrails = !drawTrails;
-			tPressed = true;
 		}
 	}
 
