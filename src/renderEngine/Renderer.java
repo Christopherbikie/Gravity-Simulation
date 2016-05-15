@@ -6,6 +6,7 @@ import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import shaders.StaticShader;
+import simulation.Simulation;
 import textures.ModelTexture;
 import maths.Maths;
 
@@ -67,8 +68,10 @@ public class Renderer {
 	 */
 	public void prepare() {
 		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0, 0, 0, 1);
+		glClearColor(0, 0, 0, 0.05f);
+		if (!Simulation.drawTrails)
+			glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 
 	/**

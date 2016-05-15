@@ -1,7 +1,10 @@
+package simulation;
+
 import entities.Camera;
 import entities.Entity;
 import entities.EntityType;
 import entities.Light;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -17,6 +20,9 @@ import java.util.List;
  * Created by Christopher on 23/04/2016.
  */
 public class Simulation {
+
+	public static boolean drawTrails = false;
+	private static boolean tPressed = false;
 
 	/**
 	 * The program's entry point, this method is executed when the simulation is run.
@@ -46,16 +52,18 @@ public class Simulation {
 		while (!Display.isCloseRequested()) {
 			float delta = Clock.delta();
 			Clock.update();
+			getInput(camera);
 			// Update all the entities positions and rotations
 			for (Entity entity : entities) {
 				entity.update(delta, entities);
 			}
-			// Move the camera according to user input
-			camera.move();
+			Clock.updateUPS();
+
 			// Prepare all the entities for rendering
 			entities.forEach(renderer::processEntity);
 			// Render the entities
 			renderer.render(light, camera);
+			Clock.updateFPS();
 			// Update the display
 			DisplayManager.updateDisplay();
 		}
@@ -66,6 +74,22 @@ public class Simulation {
 		loader.cleanUp();
 		// Close the display
 		DisplayManager.closeDisplay();
+	}
+
+	/**
+	 * Get user input
+	 *
+	 * @param camera The camera the user is controlling
+	 */
+	private static void getInput(Camera camera) {
+		input.Keyboard.update();
+		// Move the camera
+		camera.move();
+		tPressed = false;
+		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T)) {
+			drawTrails = !drawTrails;
+			tPressed = true;
+		}
 	}
 
 	private static List<Entity> loadEntities() {
