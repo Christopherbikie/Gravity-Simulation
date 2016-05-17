@@ -95,9 +95,10 @@ public class DisplayManager {
 		float amount;
 		String unit;
 		// Get the unit based on the size of the multiplier and adjust the amount accordingly
+		// If amount is 1, unit is "second per second" rather than "seconds"
 		if (multiplier < 60) {
 			amount = multiplier;
-			unit = amount == 1 ? " seconds per second" : " seconds per second";
+			unit = amount == 1 ? " second per second" : " seconds per second";
 		} else if (multiplier > 60 && multiplier < 3600) {
 			amount = multiplier / 60;
 			unit = " minutes / second";
@@ -111,7 +112,8 @@ public class DisplayManager {
 			amount = multiplier / 31536000;
 			unit = " years / second";
 		}
-		return amount + unit;
+		// Format and return the result
+		return new DecimalFormat("#.00").format(amount) + unit;
 	}
 
 	/**
