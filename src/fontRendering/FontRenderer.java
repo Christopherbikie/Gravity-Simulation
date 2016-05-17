@@ -21,7 +21,7 @@ public class FontRenderer {
 	private FontShader shader;
 
 	/**
-	 * Constuctor to create a new FontRenderer
+	 * Constructor to create a new FontRenderer
 	 */
 	public FontRenderer() {
 		shader = new FontShader();

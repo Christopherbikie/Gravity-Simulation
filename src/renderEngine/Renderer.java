@@ -128,7 +128,7 @@ public class Renderer {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition3f(),
 				entity.getRotation().x, entity.getRotation().y, entity.getRotation().z, entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
-		shader.loadIsLightSource(entity.getType().isLightSource);
+		shader.loadIsLightSource(entity.getType().isLightSource());
 	}
 
 	/**

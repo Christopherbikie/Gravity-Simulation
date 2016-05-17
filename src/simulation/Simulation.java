@@ -1,12 +1,10 @@
 package simulation;
 
+import UI.UI;
 import entities.Camera;
 import entities.Entity;
 import entities.EntityType;
 import entities.Light;
-import fontMeshCreator.FontType;
-import fontMeshCreator.GUIText;
-import fontRendering.TextMaster;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -16,7 +14,6 @@ import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import util.Clock;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +34,8 @@ public class Simulation {
 		DisplayManager.createDisplay();
 		// Create a new loader
 		Loader loader = new Loader();
+		// Create a UI
+		UI ui = new UI(loader);
 
 		// Create a list to store all entities currently in the simulation
 		List<Entity> entities = loadEntities();
@@ -50,12 +49,6 @@ public class Simulation {
 
 		// Create a renderer
 		MasterRenderer renderer = new MasterRenderer();
-		TextMaster.init(loader);
-
-		FontType font = new FontType(loader.loadTexture("/fonts/segoeUI"), new File("res/fonts/segoeUI.fnt"));
-		GUIText text = new GUIText("Testy westy", 1, font, new Vector2f(0, 0), 1f, true);
-		text.setColour(1, 0, 0);
-		TextMaster.loadText(text);
 
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
@@ -67,19 +60,23 @@ public class Simulation {
 				entity.update(delta, entities);
 			}
 			entities.forEach(entity -> entity.update(delta, entities));
+			// Update the UI
+			ui.update(entities);
 			Clock.updateUPS();
 
 			// Prepare all the entities for rendering
 			entities.forEach(renderer::processEntity);
 			// Render the entities
 			renderer.render(light, camera);
-			TextMaster.render();
+			// Render the UI
+			ui.render();
 			Clock.updateFPS();
 			// Update the display
 			DisplayManager.updateDisplay();
 		}
 
-		TextMaster.cleanUp();
+		// Clean up the UI
+		ui.cleanUp();
 		// Clean up the renderer (detach and delete shaders)
 		renderer.cleanUp();
 		// Clean up the loader (delete GPU objects)
