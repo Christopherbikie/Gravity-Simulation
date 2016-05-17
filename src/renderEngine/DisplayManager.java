@@ -97,7 +97,7 @@ public class DisplayManager {
 		// Get the unit based on the size of the multiplier and adjust the amount accordingly
 		if (multiplier < 60) {
 			amount = multiplier;
-			unit = " seconds per second";
+			unit = amount == 1 ? " seconds per second" : " seconds per second";
 		} else if (multiplier > 60 && multiplier < 3600) {
 			amount = multiplier / 60;
 			unit = " minutes / second";
