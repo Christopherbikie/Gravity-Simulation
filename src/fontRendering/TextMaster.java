@@ -16,18 +16,36 @@ import java.util.Map;
 public class TextMaster {
 
 	private static Loader loader;
+	/**
+	 * Hashmap storing fonts and text
+	 * Key: Fonts being used
+	 * Value: List of texts using the font
+	 */
 	private static Map<FontType, List<GUIText>> texts = new HashMap<>();
 	private static FontRenderer renderer;
 
+	/**
+	 * Initialise the TextMaster
+	 *
+	 * @param theLoader loader to use
+	 */
 	public static void init(Loader theLoader) {
 		renderer = new FontRenderer();
 		loader = theLoader;
 	}
 
+	/**
+	 * Render text
+	 */
 	public static void render() {
 		renderer.render(texts);
 	}
 
+	/**
+	 * Load text into the texts HashMap
+	 *
+	 * @param text Text to loaded
+	 */
 	public static void loadText(GUIText text) {
 		FontType font = text.getFont();
 		TextMeshData data = font.loadText(text);
@@ -41,6 +59,11 @@ public class TextMaster {
 		textBatch.add(text);
 	}
 
+	/**
+	 * Remove text from the texts HashMap
+	 *
+	 * @param text Text to be removed
+	 */
 	public static void removeText(GUIText text){
 		List<GUIText> textBatch = texts.get(text.getFont());
 		textBatch.remove(text);
@@ -48,6 +71,9 @@ public class TextMaster {
 			texts.remove(texts.get(text.getFont()));
 	}
 
+	/**
+	 * Clean up the renderer
+	 */
 	public static void cleanUp() {
 		renderer.cleanUp();
 	}

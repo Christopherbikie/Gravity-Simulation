@@ -98,9 +98,8 @@ public class Simulation {
 		// Move the camera
 		camera.move();
 		// Check if trails should be drawn
-		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T)) {
+		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T))
 			drawTrails = !drawTrails;
-		}
 	}
 
 	private static List<Entity> loadEntities() {
