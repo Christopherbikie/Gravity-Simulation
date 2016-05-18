@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Entity {
 
+	private String name;
 	/**
 	 * The type of entity eg planet, star...
 	 */
@@ -247,6 +248,14 @@ public class Entity {
 
 	public void setRotationPeriod(int rotationPeriod) {
 		this.rotationPeriod = rotationPeriod;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
