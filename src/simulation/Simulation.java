@@ -54,12 +54,16 @@ public class Simulation {
 		while (!Display.isCloseRequested()) {
 			float delta = Clock.delta();
 			Clock.update();
-			getInput(camera);
+			getInput(camera, entities);
 			// Update all the entities positions and rotations
-			entities.forEach(entity -> entity.update(delta, entities));
+			for (int i = 0; i < 1000; i++) {
+				for (Entity entity : entities) {
+					entity.update(delta / 1000, entities);
+					Clock.updateUPS();
+				}
+			}
 			// Update the UI
 			ui.update(entities);
-			Clock.updateUPS();
 
 			// Prepare all the entities for rendering
 			entities.forEach(renderer::processEntity);
@@ -88,10 +92,10 @@ public class Simulation {
 	 *
 	 * @param camera The camera the user is controlling
 	 */
-	private static void getInput(Camera camera) {
+	private static void getInput(Camera camera, List<Entity> entities) {
 		input.Keyboard.update();
 		// Move the camera
-		camera.move();
+		camera.move(entities);
 		// Check if trails should be drawn
 		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T))
 			drawTrails = !drawTrails;
