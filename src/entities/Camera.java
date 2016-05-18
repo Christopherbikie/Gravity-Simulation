@@ -43,8 +43,8 @@ public class Camera {
 	 */
 	public void move(List<Entity> entities) {
 		// Get the time since the last frame
-		// Do not take the speed of time into account
-		float delta = Clock.deltaWithoutMultiplier();
+		// Do not take the speed of time or pausing into account
+		float delta = Clock.deltaWithoutMultiplier(false);
 		// Make speed proportional to the distance from the y plane
 		float speed = Math.abs(position.y) + 1;
 		if (input.Keyboard.getKeyDown(Keyboard.KEY_W)) {

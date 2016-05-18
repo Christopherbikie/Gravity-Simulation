@@ -50,8 +50,8 @@ public class Clock {
 	 *
 	 * @return delta in milliseconds
 	 */
-	public static float deltaWithoutMultiplier() {
-		if (paused)
+	public static float deltaWithoutMultiplier(boolean usePaused) {
+		if (paused && usePaused)
 			return 0;
 		else
 			return d;
