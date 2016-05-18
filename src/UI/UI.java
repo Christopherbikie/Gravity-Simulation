@@ -9,7 +9,6 @@ import org.lwjgl.util.vector.Vector2f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,17 @@ public class UI {
 	 * Number formatterFourDecimals
 	 */
 	private List<String> strings = new ArrayList<>();
+	/**
+	 * Formatter for four decimal places
+	 */
 	private DecimalFormat formatterFourDecimals = new DecimalFormat("0.0000");
+	/**
+	 * Formatter for two decimal places
+	 */
 	private DecimalFormat formatterTwoDecimals = new DecimalFormat("0.00");
+	/**
+	 * Index of the currently selected entity
+	 */
 	private int entitySelection = 0;
 
 	/**
@@ -41,7 +49,7 @@ public class UI {
 	 * @param loader Loader to use to load font files
 	 */
 	public UI(Loader loader) {
-		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), new File("res/fonts/segoe_ui.fnt"));
+		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), "/fonts/segoe_ui");
 		TextMaster.init(loader);
 	}
 
@@ -51,16 +59,20 @@ public class UI {
 	 * @param entities List of entities
 	 */
 	public void update(List<Entity> entities) {
+		// Get keyboard input
 		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_RETURN))
 			entitySelection++;
 		if (entitySelection >= entities.size())
 			entitySelection = 0;
 
+		// Clear the current statistics
 		stats.forEach(GUIText::remove);
 		stats.clear();
 
+		// Get the selected entity
 		Entity entity = entities.get(entitySelection);
 
+		// Clear and repopulate the array of strings
 		strings.clear();
 		strings.add("Name: " + entity.getName());
 		strings.add("Entity type: " + entity.getType().getName());
@@ -69,6 +81,7 @@ public class UI {
 		strings.add("Mass: " + entity.getMass() + " kg");
 		strings.add("Rotation period: " + (entity.getRotationPeriod() == 0 ? "Not rotating" : formatterTwoDecimals.format((float) entity.getRotationPeriod() / 3600)));
 
+		// Create a GUIText for each line of text
 		for (int i = 0; i < strings.size(); i++) {
 			GUIText statistic =  new GUIText(strings.get(i), 0.8f, segoeUI, new Vector2f(0, (float) i / DisplayManager.HEIGHT * 20), 1f, false);
 			statistic.setColour(0.8f, 0.8f, 0.8f);
