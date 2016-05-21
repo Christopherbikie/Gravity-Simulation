@@ -42,7 +42,7 @@ public class DisplayManager {
 			// Create the window
 			Display.create(new PixelFormat(), attribs);
 			// Set the display's title
-			Display.setTitle("Gravity simulation.Simulation");
+			Display.setTitle("Gravity Simulation");
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +58,7 @@ public class DisplayManager {
 		// Sync the display to our frame rate
 		Display.sync(FPS_CAP);
 		// Set the display's title
-		Display.setTitle("Gravity simulation.Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Time: " + getTime() + " | Speed: " + getMultiplier());
+		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Time: " + getTime() + " | Speed: " + getMultiplier());
 		// Update the display
 		Display.update();
 	}
