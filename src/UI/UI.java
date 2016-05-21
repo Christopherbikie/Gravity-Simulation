@@ -1,6 +1,7 @@
 package UI;
 
 import entities.Entity;
+import entities.EntityType;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
@@ -9,6 +10,7 @@ import org.lwjgl.util.vector.Vector2f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 
+import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,11 @@ import java.util.List;
  * Created by Christopher on 17/05/2016.
  */
 public class UI {
+
+	/**
+	 * Array representing which statistics are editable
+	 */
+	private final boolean[] EDITABLE_STATS = {true, true, true, true, true, true};
 
 	/**
 	 * The font to render with
@@ -42,6 +49,10 @@ public class UI {
 	 * Index of the currently selected entity
 	 */
 	private int entitySelection = 0;
+	/**
+	 * Number representing the line of the currently selected statistic
+	 */
+	private int statSelection = 0;
 
 	/**
 	 * Constructor to create a UI
@@ -51,6 +62,18 @@ public class UI {
 	public UI(Loader loader) {
 		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), "/fonts/segoe_ui");
 		TextMaster.init(loader);
+		// Make sure the selected statistic is valid
+		while (!EDITABLE_STATS[statSelection]) {
+			statSelection++;
+			if (statSelection >= EDITABLE_STATS.length)
+				statSelection = 0;
+		}
+		// Use the operating system's look and feel
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -65,28 +88,155 @@ public class UI {
 		if (entitySelection >= entities.size())
 			entitySelection = 0;
 
-		// Clear the current statistics
-		stats.forEach(GUIText::remove);
-		stats.clear();
+		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_DOWN)) {
+			statSelection++;
+			if (statSelection >= EDITABLE_STATS.length)
+				statSelection = 0;
+			while (!EDITABLE_STATS[statSelection]) {
+				statSelection++;
+				if (statSelection >= EDITABLE_STATS.length)
+					statSelection = 0;
+			}
+		}
+		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_UP)) {
+			statSelection--;
+			if (statSelection < 0)
+				statSelection = EDITABLE_STATS.length - 1;
+			while (!EDITABLE_STATS[statSelection]) {
+				statSelection--;
+				if (statSelection < 0)
+					statSelection = EDITABLE_STATS.length - 1;
+			}
+		}
 
 		// Get the selected entity
 		Entity entity = entities.get(entitySelection);
 
+		// Get changes to statistics
+		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_RIGHT)) {
+			// Switch to the currently selected statistic
+			switch (statSelection) {
+				case 0:
+					// Show a dialog box asking for text input, store the answer
+					String input = JOptionPane.showInputDialog(null, "Enter a name for " + entity.getName(), "Rename dialog", JOptionPane.PLAIN_MESSAGE);
+					// As long as input is not null, set the entities name to the input
+					if (input != null)
+						entity.setName(input);
+					break;
+				case 1:
+					// If the entity is a star make it a planet, otherwise make it a star
+					if (entity.getType() == EntityType.Star)
+						entity.setType(EntityType.Planet);
+					else
+						entity.setType(EntityType.Star);
+					break;
+				case 2:
+					// Create text fields
+					JTextField xField = new JTextField(5);
+					JTextField yField = new JTextField(5);
+
+					// Create the dialog box
+					JPanel inputPanel = new JPanel();
+					inputPanel.add(new JLabel("x:"));
+					inputPanel.add(xField);
+					inputPanel.add(Box.createHorizontalStrut(15)); // a spacer
+					inputPanel.add(new JLabel("y:"));
+					inputPanel.add(yField);
+
+					// Show the dialog box
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the position for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					// Change the position to the input, ignore number formatting errors
+					try {
+						entity.setPosition(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
+					} catch (NumberFormatException ignored) {
+					}
+					break;
+				case 3:
+					// Create text fields
+					xField = new JTextField(8);
+					yField = new JTextField(8);
+
+					// Create the dialog box
+					inputPanel = new JPanel();
+					inputPanel.add(new JLabel("x:"));
+					inputPanel.add(xField);
+					inputPanel.add(Box.createHorizontalStrut(15)); // a spacer
+					inputPanel.add(new JLabel("y:"));
+					inputPanel.add(yField);
+
+					// Show the dialog box
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the velocity for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					// Change the velocity to the input, ignore number formatting errors
+					try {
+						entity.setVelocity(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
+					} catch (NumberFormatException ignored) {
+					}
+					break;
+				case 4:
+					// Create text fields
+					xField = new JTextField(8);
+					yField = new JTextField(2);
+
+					// Create the dialog box
+					inputPanel = new JPanel();
+					inputPanel.add(xField);
+					inputPanel.add(new JLabel("* 10 ^"));
+					inputPanel.add(yField);
+					inputPanel.add(new JLabel("kg"));
+
+					// Show the dialog box
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the mass for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					// Calculate and change the mass to the input, ignore number formatting errors
+					try {
+						entity.setMass(Double.parseDouble(xField.getText()) * Math.pow(10, Double.parseDouble(yField.getText())));
+					} catch (NumberFormatException ignored) {
+					}
+					break;
+				case 5:
+					// Show a dialog box asking for text input, store the answer
+					input = JOptionPane.showInputDialog(null, "Enter the rotation period for " + entity.getName(), "Change rotation period", JOptionPane.PLAIN_MESSAGE);
+					// As long as input is not null, set the entities rotation period to the input
+					// Ignore number formatting errors
+					try {
+						if (input != null)
+							entity.setRotationPeriod(Integer.parseInt(input));
+					} catch (NumberFormatException ignored) {
+					}
+					break;
+			}
+		}
+
+		// Clear the current statistics
+		stats.forEach(GUIText::remove);
+		stats.clear();
+
 		// Clear and repopulate the array of strings
 		strings.clear();
-		strings.add("Name: " + entity.getName());
-		strings.add("Entity type: " + entity.getType().getName());
-		strings.add("Position (AU): " + formatterFourDecimals.format(entity.getPosition2f().x) + ", " + formatterFourDecimals.format(entity.getPosition2f().y));
-		strings.add("Velocity (m/s): " + formatterFourDecimals.format(entity.getVelocity().x) + ", " + formatterFourDecimals.format(entity.getVelocity().y));
-		strings.add("Mass: " + entity.getMass() + " kg");
-		strings.add("Rotation period: " + (entity.getRotationPeriod() == 0 ? "Not rotating" : formatterTwoDecimals.format((float) entity.getRotationPeriod() / 3600)));
+		strings.add(generateStatistic(0, "Name", entity.getName()));
+		strings.add(generateStatistic(1, "Entity type", entity.getType().getName()));
+		strings.add(generateStatistic(2, "Position (AU)", formatterFourDecimals.format(entity.getPosition2f().x) + ", " + formatterFourDecimals.format(entity.getPosition2f().y)));
+		strings.add(generateStatistic(3, "Velocity (m/s)", formatterFourDecimals.format(entity.getVelocity().x) + ", " + formatterFourDecimals.format(entity.getVelocity().y)));
+		strings.add(generateStatistic(4, "Mass", entity.getMass() + " kg"));
+		strings.add(generateStatistic(5, "Rotation period", (entity.getRotationPeriod() == 0 ? "Not rotating" : formatterTwoDecimals.format((float) entity.getRotationPeriod() / 3600))));
 
 		// Create a GUIText for each line of text
 		for (int i = 0; i < strings.size(); i++) {
-			GUIText statistic =  new GUIText(strings.get(i), 0.8f, segoeUI, new Vector2f(0, (float) i / DisplayManager.HEIGHT * 20), 1f, false);
+			GUIText statistic =  new GUIText(strings.get(i), 0.8f, segoeUI, new Vector2f(0.005f, (float) i / DisplayManager.HEIGHT * 20), 1f, false);
 			statistic.setColour(0.8f, 0.8f, 0.8f);
 			stats.add(statistic);
 		}
+	}
+
+	/**
+	 * Generate a formatted line showing a statistic and its label, and a '>' if the statistic is selected.
+	 *
+	 * @param number Number of the statistic, used to work out whether the statistic is selected
+	 * @param label Label or name of the statistic
+	 * @param value Value of the statistic
+	 * @return Formatted string representing the statistic
+	 */
+	private String generateStatistic(int number, String label, String value) {
+		return (number == statSelection ? "> " : "") + label + ": " + value;
 	}
 
 	/**

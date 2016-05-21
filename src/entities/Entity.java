@@ -171,6 +171,10 @@ public class Entity {
 		return type;
 	}
 
+	public void setType(EntityType type) {
+		this.type = type;
+	}
+
 	public String getModelPath() {
 		return modelPath;
 	}

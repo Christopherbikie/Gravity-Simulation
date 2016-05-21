@@ -76,14 +76,14 @@ public class Camera {
 			float angleChange = Mouse.getDY() * 0.1f;
 			pitch -= angleChange;
 		}
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_UP))
-			pitch -= 60f * delta;
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_DOWN))
-			pitch += 60f * delta;
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_LEFT))
-			yaw -= 60f * delta;
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_RIGHT))
-			yaw += 60f * delta;
+//		if (input.Keyboard.getKeyDown(Keyboard.KEY_UP))
+//			pitch -= 60f * delta;
+//		if (input.Keyboard.getKeyDown(Keyboard.KEY_DOWN))
+//			pitch += 60f * delta;
+//		if (input.Keyboard.getKeyDown(Keyboard.KEY_LEFT))
+//			yaw -= 60f * delta;
+//		if (input.Keyboard.getKeyDown(Keyboard.KEY_RIGHT))
+//			yaw += 60f * delta;
 
 		// Move camera with the sun
 		Entity sun = entities.get(0);
