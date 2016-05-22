@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import entities.Camera;
 import entities.Entity;
@@ -12,8 +12,6 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
 import simulation.Simulation;
-
-import java.util.List;
 
 /**
  * Created by Christopher on 22/05/2016.
