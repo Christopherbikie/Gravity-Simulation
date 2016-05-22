@@ -11,6 +11,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
+import simulation.Simulation;
 
 import java.util.List;
 
@@ -19,10 +20,6 @@ import java.util.List;
  */
 public class EntityLabeler {
 
-	/**
-	 * List of entities
-	 */
-	private List<Entity> entities;
 	/**
 	 * The projection matrix
 	 */
@@ -43,13 +40,11 @@ public class EntityLabeler {
 	/**
 	 * Creates a new EntityLabelManager
 	 *
-	 * @param entities List of entities to make labels for
 	 * @param camera The camera we are viewing from
 	 * @param projectionMatrix The projection matrix
 	 * @param loader Loader to load the font with
 	 */
-	public EntityLabeler(List<Entity> entities, Camera camera, Matrix4f projectionMatrix, Loader loader) {
-		this.entities = entities;
+	public EntityLabeler(Camera camera, Matrix4f projectionMatrix, Loader loader) {
 		this.camera = camera;
 		this.projectionMatrix = projectionMatrix;
 		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), "/fonts/segoe_ui");
@@ -64,7 +59,7 @@ public class EntityLabeler {
 			showLabels = !showLabels;
 		// If labels are to be shown, create labels for all entities in the screen
 		if (showLabels)
-			for (Entity entity : entities) {
+			for (Entity entity : Simulation.getEntities()) {
 				Vector3f screenCoords = Maths.convertToScreenSpace(entity.getPosition3f(), Maths.createViewMatrix(camera), projectionMatrix);
 				if (screenCoords == null)
 					continue;

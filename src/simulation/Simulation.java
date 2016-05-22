@@ -15,6 +15,8 @@ import renderEngine.MasterRenderer;
 import util.Clock;
 import util.XMLReader;
 
+import javax.swing.*;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -31,6 +33,7 @@ public class Simulation {
 	 * 1.0 represents a radius of 1 AU
 	 */
 	public static float scale = 0.1f;
+	private static List<Entity> entities;
 
 	/**
 	 * The program's entry point, this method is executed when the simulation is run.
@@ -45,7 +48,7 @@ public class Simulation {
 
 		// Create a list to store all entities currently in the simulation
 		// Load the entities from an xml file
-		List<Entity> entities = XMLReader.loadSystem("/xml/theSolarSystem.xml");
+		entities = XMLReader.loadSystem("/xml/theSolarSystem.xml");
 
 		// Create a light source at the location of the sun
 		// Assumes sun is the first object of the array
@@ -58,13 +61,13 @@ public class Simulation {
 		MasterRenderer renderer = new MasterRenderer();
 
 		// Create a UI
-		UI ui = new UI(loader, new MousePicker(camera, renderer.getProjectionMatrix()), new EntityLabeler(entities, camera, renderer.getProjectionMatrix(), loader));
+		UI ui = new UI(loader, new MousePicker(camera, renderer.getProjectionMatrix()), new EntityLabeler(camera, renderer.getProjectionMatrix(), loader));
 
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
 			float delta = Clock.delta();
 			Clock.update();
-			getInput(camera, entities);
+			getInput(camera);
 
 			// Update all the entities positions and rotations
 			for (int i = 0; i < 1000; i++) {
@@ -103,7 +106,7 @@ public class Simulation {
 	 *
 	 * @param camera The camera the user is controlling
 	 */
-	private static void getInput(Camera camera, List<Entity> entities) {
+	private static void getInput(Camera camera) {
 		input.Keyboard.update();
 		// Move the camera
 		camera.move(entities);
@@ -122,5 +125,20 @@ public class Simulation {
 			for (Entity entity : entities)
 				entity.setScale(scale);
 		}
+
+		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_O)) {
+			final JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(null);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				System.out.println(file);
+				entities = XMLReader.loadSystem(file);
+			}
+		}
+	}
+
+	public static List<Entity> getEntities() {
+		return entities;
 	}
 }
