@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system>
+    <entity>
+        <name>Wolf 1061 HIP 80824</name>
+        <type>star</type>
+        <model>brownDwarf</model>
+        <xPosition>0</xPosition>
+        <yPosition>0</yPosition>
+        <xVelocity>0</xVelocity>
+        <yVelocity>0</yVelocity>
+        <mass>4.97125e+29</mass>
+        <rotation-period>2192832</rotation-period>
+    </entity>
+    <entity>
+        <name>Wolf 1061 b</name>
+        <type>planet</type>
+        <model>venus</model>
+        <xPosition>-0.035509</xPosition>
+        <yPosition>0</yPosition>
+        <xVelocity>0</xVelocity>
+        <yVelocity>-79753.2</yVelocity>
+        <mass>5.9722e+24</mass>
+        <rotation-period>2192832</rotation-period>
+    </entity>
+    <entity>
+        <name>Wolf 1061 c</name>
+        <type>planet</type>
+        <model>earth</model>
+        <xPosition>-0.08427</xPosition>
+        <yPosition>0</yPosition>
+        <xVelocity>0</xVelocity>
+        <yVelocity>-51770.3</yVelocity>
+        <mass>2.53819e+25</mass>
+        <rotation-period>2192832</rotation-period>
+    </entity>
+    <entity>
+        <name>Wolf 1061 d</name>
+        <type>planet</type>
+        <model>mars</model>
+        <xPosition>-0.2039</xPosition>
+        <yPosition>0</yPosition>
+        <xVelocity>0</xVelocity>
+        <yVelocity>-33282</yVelocity>
+        <mass>3.11152e+25</mass>
+        <rotation-period>2192832</rotation-period>
+    </entity>
+</system>

@@ -39,7 +39,7 @@ public class Simulation {
 
 		// Create a list to store all entities currently in the simulation
 		// Load the entities from an xml file
-		List<Entity> entities = XMLReader.loadSystem("/xml/theSolarSystem.xml");
+		List<Entity> entities = XMLReader.loadSystem("/xml/wolf1061.xml");
 
 		// Create a light source at the location of the sun
 		// Assumes sun is the first object of the array
