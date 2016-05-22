@@ -64,6 +64,7 @@ public class Entity {
 	public static Entity uranus = new Entity("/obj/sphere4096", "/textures/uranus");
 	public static Entity neptune = new Entity("/obj/sphere4096", "/textures/neptune");
 	public static Entity pluto = new Entity("/obj/sphere4096", "/textures/pluto");
+	public static Entity brownDwarf = new Entity("/obj/sphere4096", "/textures/brownDwarf");
 
 	/**
 	 * Create a new entity using a path to the entity's model and texture
