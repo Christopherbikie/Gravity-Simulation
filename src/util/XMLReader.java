@@ -24,6 +24,11 @@ import java.util.List;
 public class XMLReader {
 
 	/**
+	 * The most recently accessed XML file
+	 */
+	private static Document mostRecentXML;
+
+	/**
 	 * Load a solar system
 	 *
 	 * @param path Location of the xml file with the solar system data
@@ -32,21 +37,35 @@ public class XMLReader {
 	public static List<Entity> loadSystem(String path) {
 		// Create an XML Document object
 		Document xmlDoc = getDocument(path);
+		mostRecentXML = xmlDoc;
 
 		// Get all of the entities from the XML Document
 		assert xmlDoc != null;
 		return loadSystem(xmlDoc);
 	}
 
+	/**
+	 * Load a solar system from a File object
+	 *
+	 * @param file The File object to load from
+	 * @return Array of entities from the loaded file
+	 */
 	public static List<Entity> loadSystem(File file) {
 		// Create an XML Document object
 		Document xmlDoc = getDocument(file);
+		mostRecentXML = xmlDoc;
 
 		// Get all of the entities from the XML Document
 		assert xmlDoc != null;
 		return loadSystem(xmlDoc);
 	}
 
+	/**
+	 * Load a solar system from a XML document
+	 *
+	 * @param xmlDoc The XML document to load from
+	 * @return Array of entities from the document
+	 */
 	private static List<Entity> loadSystem(Document xmlDoc) {
 		NodeList entityNodes = xmlDoc.getElementsByTagName("entity");
 
@@ -199,5 +218,13 @@ public class XMLReader {
 			elements.add(elementList.item(0).getNodeValue().trim());
 		}
 		return elements;
+	}
+
+	/**
+	 * Get the most recently accessed XML file as an array of entities
+	 * @return the most recently accessed XML file
+	 */
+	public static List<Entity> loadMostRecent() {
+		return loadSystem(mostRecentXML);
 	}
 }

@@ -113,7 +113,7 @@ public class Clock {
 	 * @param value Value to set the speed to.
 	 */
 	public static void setMultiplier(float value) {
-		multiplier *= value;
+		multiplier = value;
 	}
 
 	/**
@@ -162,5 +162,14 @@ public class Clock {
 	 */
 	public static double getTotalTime() {
 		return totalTime;
+	}
+
+	/**
+	 * Set the total amount of time that has passed.
+	 *
+	 * @param totalTime amount to set totalTime to
+	 */
+	public static void setTotalTime(double totalTime) {
+		Clock.totalTime = totalTime;
 	}
 }

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
+import simulation.Simulation;
 import util.Clock;
 
 import java.text.DecimalFormat;
@@ -58,7 +59,7 @@ public class DisplayManager {
 		// Sync the display to our frame rate
 		Display.sync(FPS_CAP);
 		// Set the display's title
-		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Time: " + getTime() + " | Speed: " + getMultiplier());
+		Display.setTitle("Gravity Simulation | FPS: " + Clock.getFPS() + " UPS: " + Clock.getUPS() + " | Time: " + getTime() + " | Speed: " + getMultiplier() + (Simulation.isTestRunning() ? " | Currently testing solar mass " + Simulation.getCurrentMassTest() : ""));
 		// Update the display
 		Display.update();
 	}

@@ -1,7 +1,8 @@
 package simulation;
 
-import UI.UI;
-import UI.EntityLabeler;
+import maths.Maths;
+import ui.UI;
+import ui.EntityLabeler;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
@@ -17,6 +18,7 @@ import util.XMLReader;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +31,28 @@ public class Simulation {
 	 */
 	public static boolean drawTrails = false;
 	/**
+	 * True if testing for min/max sun mass, otherwise false
+	 */
+	private static boolean isTestRunning = false;
+	/**
 	 * Scale of entity sizes.
 	 * 1.0 represents a radius of 1 AU
 	 */
-	public static float scale = 0.1f;
+	private static float scale = 0.1f;
+	/**
+	 * Array of all entities in the solar system
+	 */
 	private static List<Entity> entities;
+	/**
+	 * Array of all entities in the solar system at their state before the test started
+	 */
+	private static List<Entity> originalEntities;
+
+	private static double currentMassTest;
+
+	private static double currentTestStart = 0;
+
+	private static List<Double> successfulTests = new ArrayList<>();
 
 	/**
 	 * The program's entry point, this method is executed when the simulation is run.
@@ -79,6 +98,10 @@ public class Simulation {
 			// Update the UI
 			ui.update();
 
+			if (isTestRunning) {
+				updateTest();
+			}
+
 			// Prepare all the entities for rendering
 			entities.forEach(renderer::processEntity);
 			// Render the entities
@@ -115,13 +138,13 @@ public class Simulation {
 			drawTrails = !drawTrails;
 
 		// Update scale
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_PRIOR)) {
-			scale *= 1 + Clock.delta();
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_PRIOR)) { // Page up
+			scale *= 1 + Clock.deltaWithoutMultiplier(false);
 			for (Entity entity : entities)
 				entity.setScale(scale);
 		}
-		if (input.Keyboard.getKeyDown(Keyboard.KEY_NEXT)) {
-			scale *= 1 - Clock.delta();
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_NEXT)) { // Page down
+			scale *= 1 - Clock.deltaWithoutMultiplier(false);
 			for (Entity entity : entities)
 				entity.setScale(scale);
 		}
@@ -142,9 +165,90 @@ public class Simulation {
 				}
 			}
 		}
+
+		// If the enter key is pressed, start a test
+		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_RETURN) && !isTestRunning) {
+			entities = XMLReader.loadMostRecent();
+			originalEntities = XMLReader.loadMostRecent();
+			successfulTests.clear();
+			Clock.setMultiplier(1576800000f);
+			currentMassTest = 1e20;
+			System.out.println("Started");
+			isTestRunning = true;
+		}
+	}
+
+	/**
+	 * Update the current test
+	 */
+	private static void updateTest() {
+		if (currentTestStart == 0) {
+			currentTestStart = Clock.getTotalTime();
+			entities.get(0).setMass(currentMassTest);
+		}
+		// Current mass is successful if it lasts 1576800000 seconds (50 years)
+		if (Clock.getTotalTime() >= currentTestStart + 1576800000d) {
+			entities = XMLReader.loadMostRecent();
+			Clock.setTotalTime(currentTestStart);
+			System.out.println("Successful test on mass " + currentMassTest);
+			successfulTests.add(currentMassTest);
+			// Increase tested mass by 5%
+			currentMassTest *= 1.05f;
+			entities.get(0).setMass(currentMassTest);
+			// Finish after testing mass 1e40
+			if (currentMassTest > 1e40)
+				finishTest();
+		}
+
+		// Check if any entity has moved 50% closer or further from the sun
+		for (int i = 1; i < entities.size(); i++) {
+			float percentDifference = entities.get(i).getPosition2f().length() / originalEntities.get(i).getPosition2f().length();
+
+			if ((percentDifference < 0.5f || percentDifference > 1.5f) && entities.get(i).getPosition2f().length() >= 0.1f) {
+				entities = XMLReader.loadMostRecent();
+				Clock.setTotalTime(currentTestStart);
+				// Increase tested mass by 5%
+				currentMassTest *= 1.05f;
+				entities.get(0).setMass(currentMassTest);
+				// Finish after testing mass 1e40
+				if (currentMassTest > 1e40)
+					finishTest();
+			}
+		}
+	}
+
+	/**
+	 * Called to stop a test a print the results
+	 */
+	private static void finishTest() {
+		isTestRunning = false;
+		entities = XMLReader.loadMostRecent();
+		Clock.setMultiplier(86400);
+
+		// Calculate mean result
+		double mean = 0;
+		for (Double mass : successfulTests)
+			mean += mass;
+		mean /= successfulTests.size();
+
+		// Print results
+		System.out.println("Finished!");
+		System.out.println("Minimum: " + successfulTests.get(0));
+		System.out.println("Maximum: " + successfulTests.get(successfulTests.size() - 1));
+		System.out.println("Range: " + (successfulTests.get(successfulTests.size() - 1) - successfulTests.get(0)));
+		System.out.println("Max / Min: " + (successfulTests.get(successfulTests.size() - 1) / successfulTests.get(0)));
+		System.out.println("Mean: " + mean);
 	}
 
 	public static List<Entity> getEntities() {
 		return entities;
+	}
+
+	public static boolean isTestRunning() {
+		return isTestRunning;
+	}
+
+	public static double getCurrentMassTest() {
+		return currentMassTest;
 	}
 }
