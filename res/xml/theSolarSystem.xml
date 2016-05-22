@@ -58,7 +58,7 @@
     <entity>
         <name>Jupiter</name>
         <type>planet</type>
-        <model>jupter</model>
+        <model>jupiter</model>
         <xPosition>-5.2043f</xPosition>
         <yPosition>0</yPosition>
         <xVelocity>0</xVelocity>
