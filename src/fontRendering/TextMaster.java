@@ -72,6 +72,13 @@ public class TextMaster {
 	}
 
 	/**
+	 * Remove all existing texts
+	 */
+	public static void removeAllTexts() {
+		texts.clear();
+	}
+
+	/**
 	 * Clean up the renderer
 	 */
 	public static void cleanUp() {

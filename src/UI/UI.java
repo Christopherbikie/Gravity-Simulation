@@ -53,6 +53,10 @@ public class UI {
 	 */
 	private MousePicker mousePicker;
 	/**
+	 * The entity label manager
+	 */
+	private EntityLabeler entityLabeler;
+	/**
 	 * The currently selected entity
 	 */
 	private Entity selectedEntity;
@@ -67,9 +71,10 @@ public class UI {
 	 * @param loader Loader to use to load font files
 	 * @param mousePicker The mouse picker to select objects
 	 */
-	public UI(Loader loader, MousePicker mousePicker) {
+	public UI(Loader loader, MousePicker mousePicker, EntityLabeler entityLabeler) {
 		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), "/fonts/segoe_ui");
 		this.mousePicker = mousePicker;
+		this.entityLabeler = entityLabeler;
 		TextMaster.init(loader);
 		// Make sure the selected statistic is valid
 		while (!EDITABLE_STATS[statSelection]) {
@@ -92,7 +97,7 @@ public class UI {
 	 */
 	public void update(List<Entity> entities) {
 		// If the left mouse button is down, cycle through all entities and check if the mouse is over it.
-		// If it is, select the entity and stop cyling
+		// If it is, select the entity and stop cycling
 		mousePicker.update();
 		if (Mouse.isButtonDown(0))
 			try {
@@ -224,7 +229,7 @@ public class UI {
 		}
 
 		// Clear the current statistics
-		stats.forEach(GUIText::remove);
+		TextMaster.removeAllTexts();
 		stats.clear();
 
 		// Clear and repopulate the array of strings
@@ -242,6 +247,8 @@ public class UI {
 			statistic.setColour(0.8f, 0.8f, 0.8f);
 			stats.add(statistic);
 		}
+
+		entityLabeler.update();
 	}
 
 	/**

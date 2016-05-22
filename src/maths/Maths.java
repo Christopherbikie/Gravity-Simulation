@@ -4,6 +4,7 @@ import entities.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**
  * Created by Christopher on 24/04/2016.
@@ -52,12 +53,31 @@ public class Maths {
 		return viewMatrix;
 	}
 
-	public static Vector2f divide(Vector2f left, float divisor, Vector2f dest) {
-		if (dest == null)
-			return new Vector2f(left.x / divisor, left.y / divisor);
-		else {
-			dest.set(left.x / divisor, left.y / divisor);
-			return dest;
-		}
+	/**
+	 * Convert world coordinates to screen coordinates
+	 *
+	 * @param position World coordinates to convert
+	 * @param viewMatrix The current view matrix
+	 * @param projMatrix The projection matrix
+	 * @return Coordinates as screen coordinates
+	 *         x and y are pixels on the screen, z is distance from camera
+	 */
+	public static Vector3f convertToScreenSpace(Vector3f position, Matrix4f viewMatrix, Matrix4f projMatrix) {
+		Vector4f coords = new Vector4f(position.x, position.y, position.z, 1f);
+		Matrix4f.transform(viewMatrix, coords, coords);
+		Matrix4f.transform(projMatrix, coords, coords);
+		return clipSpaceToScreenSpace(coords);
+	}
+
+	/**
+	 * Convert homogeneous clip space to screen space
+	 *
+	 * @param coords Coordinates to convert
+	 * @return Converted coordinates
+	 */
+	private static Vector3f clipSpaceToScreenSpace(Vector4f coords) {
+		if (coords.w < 0)
+			return null;
+		return new Vector3f(((coords.x / coords.w) + 1) / 2f, 1 - (((coords.y / coords.w) + 1) / 2f), coords.z);
 	}
 }

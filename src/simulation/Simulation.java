@@ -1,6 +1,7 @@
 package simulation;
 
 import UI.UI;
+import UI.EntityLabeler;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
@@ -44,7 +45,7 @@ public class Simulation {
 
 		// Create a list to store all entities currently in the simulation
 		// Load the entities from an xml file
-		List<Entity> entities = XMLReader.loadSystem("/xml/wolf1061.xml");
+		List<Entity> entities = XMLReader.loadSystem("/xml/theSolarSystem.xml");
 
 		// Create a light source at the location of the sun
 		// Assumes sun is the first object of the array
@@ -57,7 +58,7 @@ public class Simulation {
 		MasterRenderer renderer = new MasterRenderer();
 
 		// Create a UI
-		UI ui = new UI(loader, new MousePicker(camera, renderer.getProjectionMatrix()));
+		UI ui = new UI(loader, new MousePicker(camera, renderer.getProjectionMatrix()), new EntityLabeler(entities, camera, renderer.getProjectionMatrix(), loader));
 
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
