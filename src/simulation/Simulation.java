@@ -3,12 +3,10 @@ package simulation;
 import UI.UI;
 import entities.Camera;
 import entities.Entity;
-import entities.EntityType;
 import entities.Light;
 import input.MousePicker;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -16,7 +14,6 @@ import renderEngine.MasterRenderer;
 import util.Clock;
 import util.XMLReader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +21,15 @@ import java.util.List;
  */
 public class Simulation {
 
+	/**
+	 * True if we should draw trails, otherwise false
+	 */
 	public static boolean drawTrails = false;
+	/**
+	 * Scale of entity sizes.
+	 * 1.0 represents a radius of 1 AU
+	 */
+	public static float scale = 0.1f;
 
 	/**
 	 * The program's entry point, this method is executed when the simulation is run.
@@ -104,5 +109,17 @@ public class Simulation {
 		// Check if trails should be drawn
 		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_T))
 			drawTrails = !drawTrails;
+
+		// Update scale
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_PRIOR)) {
+			scale *= 1 + Clock.delta();
+			for (Entity entity : entities)
+				entity.setScale(scale);
+		}
+		if (input.Keyboard.getKeyDown(Keyboard.KEY_NEXT)) {
+			scale *= 1 - Clock.delta();
+			for (Entity entity : entities)
+				entity.setScale(scale);
+		}
 	}
 }
