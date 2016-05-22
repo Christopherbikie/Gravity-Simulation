@@ -6,6 +6,9 @@ import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
 import input.Keyboard;
+import input.MousePicker;
+import maths.Physics;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -46,9 +49,13 @@ public class UI {
 	 */
 	private DecimalFormat formatterTwoDecimals = new DecimalFormat("0.00");
 	/**
-	 * Index of the currently selected entity
+	 * The mouse picker for selecting entities
 	 */
-	private int entitySelection = 0;
+	private MousePicker mousePicker;
+	/**
+	 * The currently selected entity
+	 */
+	private Entity selectedEntity;
 	/**
 	 * Number representing the line of the currently selected statistic
 	 */
@@ -58,9 +65,11 @@ public class UI {
 	 * Constructor to create a UI
 	 *
 	 * @param loader Loader to use to load font files
+	 * @param mousePicker The mouse picker to select objects
 	 */
-	public UI(Loader loader) {
+	public UI(Loader loader, MousePicker mousePicker) {
 		segoeUI = new FontType(loader.loadTexture("/fonts/segoe_ui"), "/fonts/segoe_ui");
+		this.mousePicker = mousePicker;
 		TextMaster.init(loader);
 		// Make sure the selected statistic is valid
 		while (!EDITABLE_STATS[statSelection]) {
@@ -79,15 +88,23 @@ public class UI {
 	/**
 	 * Update statistics
 	 *
-	 * @param entities List of entities
+	 * @param entities List of entities in the universe
 	 */
 	public void update(List<Entity> entities) {
-		// Get keyboard input
-		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_RETURN))
-			entitySelection++;
-		if (entitySelection >= entities.size())
-			entitySelection = 0;
+		// If the left mouse button is down, cycle through all entities and check if the mouse is over it.
+		// If it is, select the entity and stop cyling
+		mousePicker.update();
+		if (Mouse.isButtonDown(0))
+			for (Entity entity : entities)
+				if (Physics.isIntersecting(mousePicker.getCurrentYPlanePoint(), entity)) {
+					selectedEntity = entity;
+					break;
+				}
+		// If no entity is selected, select the first entity of the array (should be the sun)
+		if (selectedEntity == null)
+			selectedEntity = entities.get(0);
 
+		// Get keyboard input
 		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_DOWN)) {
 			statSelection++;
 			if (statSelection >= EDITABLE_STATS.length)
@@ -109,26 +126,23 @@ public class UI {
 			}
 		}
 
-		// Get the selected entity
-		Entity entity = entities.get(entitySelection);
-
 		// Get changes to statistics
 		if (Keyboard.getKeyDownNoRepeats(org.lwjgl.input.Keyboard.KEY_RIGHT)) {
 			// Switch to the currently selected statistic
 			switch (statSelection) {
 				case 0:
 					// Show a dialog box asking for text input, store the answer
-					String input = JOptionPane.showInputDialog(null, "Enter a name for " + entity.getName(), "Rename dialog", JOptionPane.PLAIN_MESSAGE);
+					String input = JOptionPane.showInputDialog(null, "Enter a name for " + selectedEntity.getName(), "Rename dialog", JOptionPane.PLAIN_MESSAGE);
 					// As long as input is not null, set the entities name to the input
 					if (input != null)
-						entity.setName(input);
+						selectedEntity.setName(input);
 					break;
 				case 1:
 					// If the entity is a star make it a planet, otherwise make it a star
-					if (entity.getType() == EntityType.Star)
-						entity.setType(EntityType.Planet);
+					if (selectedEntity.getType() == EntityType.Star)
+						selectedEntity.setType(EntityType.Planet);
 					else
-						entity.setType(EntityType.Star);
+						selectedEntity.setType(EntityType.Star);
 					break;
 				case 2:
 					// Create text fields
@@ -144,10 +158,10 @@ public class UI {
 					inputPanel.add(yField);
 
 					// Show the dialog box
-					JOptionPane.showMessageDialog(null, inputPanel, "Set the position for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the position for " + selectedEntity.getName(), JOptionPane.PLAIN_MESSAGE);
 					// Change the position to the input, ignore number formatting errors
 					try {
-						entity.setPosition(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
+						selectedEntity.setPosition(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
 					} catch (NumberFormatException ignored) {
 					}
 					break;
@@ -165,10 +179,10 @@ public class UI {
 					inputPanel.add(yField);
 
 					// Show the dialog box
-					JOptionPane.showMessageDialog(null, inputPanel, "Set the velocity for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the velocity for " + selectedEntity.getName(), JOptionPane.PLAIN_MESSAGE);
 					// Change the velocity to the input, ignore number formatting errors
 					try {
-						entity.setVelocity(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
+						selectedEntity.setVelocity(new Vector2f(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())));
 					} catch (NumberFormatException ignored) {
 					}
 					break;
@@ -185,21 +199,21 @@ public class UI {
 					inputPanel.add(new JLabel("kg"));
 
 					// Show the dialog box
-					JOptionPane.showMessageDialog(null, inputPanel, "Set the mass for " + entity.getName(), JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null, inputPanel, "Set the mass for " + selectedEntity.getName(), JOptionPane.PLAIN_MESSAGE);
 					// Calculate and change the mass to the input, ignore number formatting errors
 					try {
-						entity.setMass(Double.parseDouble(xField.getText()) * Math.pow(10, Double.parseDouble(yField.getText())));
+						selectedEntity.setMass(Double.parseDouble(xField.getText()) * Math.pow(10, Double.parseDouble(yField.getText())));
 					} catch (NumberFormatException ignored) {
 					}
 					break;
 				case 5:
 					// Show a dialog box asking for text input, store the answer
-					input = JOptionPane.showInputDialog(null, "Enter the rotation period for " + entity.getName(), "Change rotation period", JOptionPane.PLAIN_MESSAGE);
+					input = JOptionPane.showInputDialog(null, "Enter the rotation period for " + selectedEntity.getName(), "Change rotation period", JOptionPane.PLAIN_MESSAGE);
 					// As long as input is not null, set the entities rotation period to the input
 					// Ignore number formatting errors
 					try {
 						if (input != null)
-							entity.setRotationPeriod(Integer.parseInt(input));
+							selectedEntity.setRotationPeriod(Integer.parseInt(input));
 					} catch (NumberFormatException ignored) {
 					}
 					break;
@@ -212,12 +226,12 @@ public class UI {
 
 		// Clear and repopulate the array of strings
 		strings.clear();
-		strings.add(generateStatistic(0, "Name", entity.getName()));
-		strings.add(generateStatistic(1, "Entity type", entity.getType().getName()));
-		strings.add(generateStatistic(2, "Position (AU)", formatterFourDecimals.format(entity.getPosition2f().x) + ", " + formatterFourDecimals.format(entity.getPosition2f().y)));
-		strings.add(generateStatistic(3, "Velocity (m/s)", formatterFourDecimals.format(entity.getVelocity().x) + ", " + formatterFourDecimals.format(entity.getVelocity().y)));
-		strings.add(generateStatistic(4, "Mass", entity.getMass() + " kg"));
-		strings.add(generateStatistic(5, "Rotation period", (entity.getRotationPeriod() == 0 ? "Not rotating" : formatterTwoDecimals.format((float) entity.getRotationPeriod() / 3600))));
+		strings.add(generateStatistic(0, "Name", selectedEntity.getName()));
+		strings.add(generateStatistic(1, "Entity type", selectedEntity.getType().getName()));
+		strings.add(generateStatistic(2, "Position (AU)", formatterFourDecimals.format(selectedEntity.getPosition2f().x) + ", " + formatterFourDecimals.format(selectedEntity.getPosition2f().y)));
+		strings.add(generateStatistic(3, "Velocity (m/s)", formatterFourDecimals.format(selectedEntity.getVelocity().x) + ", " + formatterFourDecimals.format(selectedEntity.getVelocity().y)));
+		strings.add(generateStatistic(4, "Mass", selectedEntity.getMass() + " kg"));
+		strings.add(generateStatistic(5, "Rotation period", (selectedEntity.getRotationPeriod() == 0 ? "Not rotating" : formatterTwoDecimals.format((float) selectedEntity.getRotationPeriod() / 3600))));
 
 		// Create a GUIText for each line of text
 		for (int i = 0; i < strings.size(); i++) {

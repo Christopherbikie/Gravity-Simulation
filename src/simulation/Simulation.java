@@ -5,6 +5,7 @@ import entities.Camera;
 import entities.Entity;
 import entities.EntityType;
 import entities.Light;
+import input.MousePicker;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
@@ -34,8 +35,6 @@ public class Simulation {
 		DisplayManager.createDisplay();
 		// Create a new loader
 		Loader loader = new Loader();
-		// Create a UI
-		UI ui = new UI(loader);
 
 		// Create a list to store all entities currently in the simulation
 		List<Entity> entities = loadEntities();
@@ -50,11 +49,15 @@ public class Simulation {
 		// Create a renderer
 		MasterRenderer renderer = new MasterRenderer();
 
+		// Create a UI
+		UI ui = new UI(loader, new MousePicker(camera, renderer.getProjectionMatrix()));
+
 		// Loop to update and render all the entities
 		while (!Display.isCloseRequested()) {
 			float delta = Clock.delta();
 			Clock.update();
 			getInput(camera, entities);
+
 			// Update all the entities positions and rotations
 			for (int i = 0; i < 1000; i++) {
 				for (Entity entity : entities) {

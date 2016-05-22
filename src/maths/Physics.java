@@ -1,6 +1,8 @@
 package maths;
 
+import entities.Entity;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by Christopher on 3/05/2016.
@@ -48,5 +50,16 @@ public class Physics {
 	 */
 	public static Vector2f getAcceleration(Vector2f force, double mass) {
 		return new Vector2f(force.x / (float) mass, force.y / (float) mass);
+	}
+
+	/**
+	 * Check if a point is intersecting an entity
+	 *
+	 * @param point The point
+	 * @param entity The entity
+	 * @return True if intersecting, otherwise false
+	 */
+	public static boolean isIntersecting(Vector3f point, Entity entity) {
+		return Vector3f.sub(point, entity.getPosition3f(), null).length() <= 0.1f;
 	}
 }
