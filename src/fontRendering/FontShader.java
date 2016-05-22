@@ -9,11 +9,11 @@ public class FontShader extends ShaderProgram {
 	/**
 	 * Location of the vertex shader
 	 */
-	private static final String VERTEX_FILE = "/fontRendering/fontVertex.vert";
+	private static final String VERTEX_FILE = "/shaders/fontVertex.vert";
 	/**
 	 * Location of the fragment shader
 	 */
-	private static final String FRAGMENT_FILE = "/fontRendering/fontFragment.frag";
+	private static final String FRAGMENT_FILE = "/shaders/fontFragment.frag";
 
 	/**
 	 * Location of the colour uniform on the GPU
