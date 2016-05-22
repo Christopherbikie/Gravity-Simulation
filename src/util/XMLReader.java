@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +34,6 @@ public class XMLReader {
 
 		// Get all of the entities from the XML Document
 		assert xmlDoc != null;
-		return loadSystem(xmlDoc);
-	}
-
-	public static List<Entity> loadSystem(File file) {
-		// Create an XML Document object
-		Document xmlDoc = getDocument(file);
-
-		// Get all of the entities from the XML Document
-		assert xmlDoc != null;
-		return loadSystem(xmlDoc);
-	}
-
-	private static List<Entity> loadSystem(Document xmlDoc) {
 		NodeList entityNodes = xmlDoc.getElementsByTagName("entity");
 
 		// Create an array of Strings for each entity parameter
@@ -129,6 +115,8 @@ public class XMLReader {
 		return entities;
 	}
 
+
+
 	/**
 	 * Load an xml document
 	 *
@@ -147,32 +135,6 @@ public class XMLReader {
 			builder.setErrorHandler(null);
 
 			return builder.parse(Class.class.getResourceAsStream(path));
-
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Load an xml document
-	 *
-	 * @param file Location of the document
-	 * @return the xml document
-	 */
-	private static Document getDocument(File file) {
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-			factory.setIgnoringComments(true);
-			factory.setIgnoringElementContentWhitespace(true);
-			factory.setValidating(true);
-
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			builder.setErrorHandler(null);
-
-			return builder.parse(file);
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
