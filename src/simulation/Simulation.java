@@ -77,7 +77,7 @@ public class Simulation {
 				}
 			}
 			// Update the UI
-			ui.update(entities);
+			ui.update();
 
 			// Prepare all the entities for rendering
 			entities.forEach(renderer::processEntity);

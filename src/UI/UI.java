@@ -12,6 +12,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import simulation.Simulation;
 
 import javax.swing.*;
 import java.text.DecimalFormat;
@@ -92,10 +93,9 @@ public class UI {
 
 	/**
 	 * Update statistics
-	 *
-	 * @param entities List of entities in the universe
 	 */
-	public void update(List<Entity> entities) {
+	public void update() {
+		List<Entity> entities = Simulation.getEntities();
 		// If the left mouse button is down, cycle through all entities and check if the mouse is over it.
 		// If it is, select the entity and stop cycling
 		mousePicker.update();
