@@ -126,6 +126,7 @@ public class Simulation {
 				entity.setScale(scale);
 		}
 
+		// If 'O' is pressed, open an open file dialog to open and load an xml file
 		if (input.Keyboard.getKeyDownNoRepeats(Keyboard.KEY_O)) {
 			final JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showOpenDialog(null);
@@ -133,7 +134,12 @@ public class Simulation {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
 				System.out.println(file);
-				entities = XMLReader.loadSystem(file);
+				try {
+					entities = XMLReader.loadSystem(file);
+				} catch (Exception e) {
+					System.err.println("Not a valid XML file!");
+					e.printStackTrace();
+				}
 			}
 		}
 	}
