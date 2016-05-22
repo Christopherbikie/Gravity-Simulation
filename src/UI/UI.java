@@ -95,11 +95,14 @@ public class UI {
 		// If it is, select the entity and stop cyling
 		mousePicker.update();
 		if (Mouse.isButtonDown(0))
-			for (Entity entity : entities)
-				if (Physics.isIntersecting(mousePicker.getCurrentYPlanePoint(), entity)) {
-					selectedEntity = entity;
-					break;
-				}
+			try {
+				for (Entity entity : entities)
+					if (Physics.isIntersecting(mousePicker.getCurrentYPlanePoint(), entity)) {
+						selectedEntity = entity;
+						break;
+					}
+			} catch (NullPointerException ignored) {
+			}
 		// If no entity is selected, select the first entity of the array (should be the sun)
 		if (selectedEntity == null)
 			selectedEntity = entities.get(0);
