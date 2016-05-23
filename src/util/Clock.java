@@ -72,6 +72,8 @@ public class Clock {
 	public static void update() {
 		// Set d to the time since the last frame
 		d = getDelta();
+		if (d < 0)
+			d = 0;
 
 		// Get input for time speed and pausing
 		if (input.Keyboard.getKeyDown(Keyboard.KEY_PERIOD))
