@@ -2,11 +2,13 @@ package shaders;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
@@ -73,6 +75,10 @@ public abstract class ShaderProgram {
 		glUniform3f(location, vector.x, vector.y, vector.z);
 	}
 
+	protected  void load2DVector(int location, Vector2f vector) {
+		glUniform2f(location, vector.x, vector.y);
+	}
+
 	protected void loadBoolean(int location, boolean value) {
 		float toLoad = 0;
 		if (value) {
@@ -91,7 +97,8 @@ public abstract class ShaderProgram {
 	private static int loadShader(String path, int type) {
 		StringBuilder shaderSource = new StringBuilder();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(path));
+			InputStream in = Class.class.getResourceAsStream(path);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				shaderSource.append(line).append("\n");

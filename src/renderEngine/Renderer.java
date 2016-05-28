@@ -6,8 +6,9 @@ import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import shaders.StaticShader;
+import simulation.Simulation;
 import textures.ModelTexture;
-import toolbox.Maths;
+import maths.Maths;
 
 import java.util.List;
 import java.util.Map;
@@ -25,23 +26,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class Renderer {
 
 	/**
-	 * Field Of View in degrees.
-	 */
-	private static final float FOV = 70;
-	/**
-	 * Closest distance to camera to be rendered.
-	 */
-	private static final float NEAR_PLANE = 0.1f;
-	/**
-	 * Furthest distance from camera to be rendered.
-	 */
-	private static final float FAR_PLANE = 1000;
-
-	/**
-	 * The projection matrix.
-	 */
-	private Matrix4f projectionMatrix;
-	/**
 	 * The shader
 	 */
 	private StaticShader shader;
@@ -50,12 +34,12 @@ public class Renderer {
 	 * Constructor for the renderer.
 	 *
 	 * @param shader The shader to use
+	 * @param projectionMatrix Projection matrix to use
 	 */
-	public Renderer(StaticShader shader) {
+	public Renderer(StaticShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
-		createProjectionMatrix();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.stop();
@@ -67,8 +51,10 @@ public class Renderer {
 	 */
 	public void prepare() {
 		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0, 0, 0, 1);
+		glClearColor(0, 0, 0, 0.05f);
+		if (!Simulation.drawTrails)
+			glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 
 	/**
@@ -125,24 +111,6 @@ public class Renderer {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition3f(),
 				entity.getRotation().x, entity.getRotation().y, entity.getRotation().z, entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
-		shader.loadIsLightSource(entity.getType().isLightSource);
-	}
-
-	/**
-	 * Creates a perspective projection matrix.
-	 */
-	private void createProjectionMatrix() {
-		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV/2f))) * aspectRatio);
-		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-		projectionMatrix = new Matrix4f();
-		projectionMatrix.m00 = x_scale;
-		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-		projectionMatrix.m33 = 0;
+		shader.loadIsLightSource(entity.getType().isLightSource());
 	}
 }

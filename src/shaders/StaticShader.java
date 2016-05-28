@@ -3,15 +3,15 @@ package shaders;
 import entities.Camera;
 import entities.Light;
 import org.lwjgl.util.vector.Matrix4f;
-import toolbox.Maths;
+import maths.Maths;
 
 /**
  * Created by Christopher on 23/04/2016.
  */
 public class StaticShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "src/shaders/vertex.vert";
-	private static final String FRAGMENT_FILE = "src/shaders/fragment.frag";
+	private static final String VERTEX_FILE = "/shaders/vertex.vert";
+	private static final String FRAGMENT_FILE = "/shaders/fragment.frag";
 
 	private int transformationMatrixLocation;
 	private int projectionMatrixLocation;

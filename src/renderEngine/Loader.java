@@ -55,13 +55,33 @@ public class Loader {
 		bindIndicesBuffer(indices);
 		// Add the vao location to the vao array
 		vaos.add(vaoID);
-		// Store the positions, texture coordinates and normals as a vbo
+		// Store the positions, texture coordinates and normals in a vbo
 		storeDataInAtribList(0, 3, positions);
 		storeDataInAtribList(1, 2, textureCoords);
 		storeDataInAtribList(2, 3, normals);
 		// Unbind the vertex array
 		unbind();
 		return new RawModel(vaoID, indices.length);
+	}
+
+	/**
+	 * Takes an array of positions and texture coordinates and creates a VAO.
+	 *
+	 * @param positions Array of vertex coordinates
+	 * @param textureCoords Array of texture coordinates
+	 * @return The location of the VAO;
+	 */
+	public int loadToVAO(float[] positions, float[] textureCoords) {
+		// Create a Vertex array object and store its location
+		int vaoID = createVAO();
+		// Add the vao location to the vao array
+		vaos.add(vaoID);
+		// Store the positions, texture coordinates and normals in a vbo
+		storeDataInAtribList(0, 2, positions);
+		storeDataInAtribList(1, 2, textureCoords);
+		// Unbind the vertex array
+		unbind();
+		return vaoID;
 	}
 
 	/**
@@ -83,7 +103,7 @@ public class Loader {
 
 		// Load the texture. If the file is not found, print the stack trace.
 		try {
-			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
+			texture = TextureLoader.getTexture("PNG", Class.class.getResourceAsStream(fileName + ".png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

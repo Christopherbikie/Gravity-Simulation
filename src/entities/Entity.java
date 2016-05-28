@@ -1,18 +1,22 @@
 package entities;
 
+import maths.Physics;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
-import renderEngine.OBJLoader;
+import util.OBJLoader;
 import textures.ModelTexture;
+
+import java.util.List;
 
 /**
  * Created by Christopher on 24/04/2016.
  */
 public class Entity {
 
+	private String name;
 	/**
 	 * The type of entity eg planet, star...
 	 */
@@ -21,6 +25,14 @@ public class Entity {
 	 * The entity's model
 	 */
 	private TexturedModel model;
+	/**
+	 * The entity's mass
+	 */
+	private double mass;
+	/**
+	 * Time in seconds for the object to complete one rotation on it's axis
+	 */
+	private int rotationPeriod;
 	/**
 	 * The entity's position
 	 */
@@ -34,20 +46,25 @@ public class Entity {
 	 */
 	private Vector3f rotation;
 	/**
+	 * The entity's velocity
+	 */
+	private Vector2f velocity = new Vector2f(0, 0);
+	/**
 	 * The path to the entity's model and texture
 	 */
 	private String modelPath, texturePath;
 
-	public static Entity sun = new Entity("obj/sphere4096", "textures/star");
-	public static Entity mercury = new Entity("obj/sphere4096", "textures/mercury");
-	public static Entity venus = new Entity("obj/sphere4096", "textures/venus");
-	public static Entity earth = new Entity("obj/sphere4096", "textures/earth");
-	public static Entity mars = new Entity("obj/sphere4096", "textures/mars");
-	public static Entity jupiter = new Entity("obj/sphere4096", "textures/jupiter");
-	public static Entity saturn = new Entity("obj/sphere4096", "textures/saturn");
-	public static Entity uranus = new Entity("obj/sphere4096", "textures/uranus");
-	public static Entity neptune = new Entity("obj/sphere4096", "textures/neptune");
-	public static Entity pluto = new Entity("obj/sphere4096", "textures/pluto");
+	public static Entity sun = new Entity("/obj/sphere4096", "/textures/star");
+	public static Entity mercury = new Entity("/obj/sphere4096", "/textures/mercury");
+	public static Entity venus = new Entity("/obj/sphere4096", "/textures/venus");
+	public static Entity earth = new Entity("/obj/sphere4096", "/textures/earth");
+	public static Entity mars = new Entity("/obj/sphere4096", "/textures/mars");
+	public static Entity jupiter = new Entity("/obj/sphere4096", "/textures/jupiter");
+	public static Entity saturn = new Entity("/obj/sphere4096", "/textures/saturn");
+	public static Entity uranus = new Entity("/obj/sphere4096", "/textures/uranus");
+	public static Entity neptune = new Entity("/obj/sphere4096", "/textures/neptune");
+	public static Entity pluto = new Entity("/obj/sphere4096", "/textures/pluto");
+	public static Entity brownDwarf = new Entity("/obj/sphere4096", "/textures/brownDwarf");
 
 	/**
 	 * Create a new entity using a path to the entity's model and texture
@@ -99,6 +116,16 @@ public class Entity {
 	}
 
 	/**
+	 * Increase the entity's position
+	 *
+	 * @param amount Amount to increase the entities position by
+	 */
+	public void increasePosition(Vector2f amount) {
+		this.position.x += amount.x;
+		this.position.y += amount.y;
+	}
+
+	/**
 	 * Increase the entity's rotation
 	 *
 	 * @param amount Amount to rotate in degrees
@@ -109,8 +136,44 @@ public class Entity {
 		this.rotation.z += amount.z;
 	}
 
+	/**
+	 * Updates the entities's position & rotation
+	 *
+	 * @param delta Time since last update in seconds
+	 * @param entities List of all entities to interact with
+	 */
+	public void update(float delta, List<Entity> entities) {
+		// Update the entity's position
+		// Iterate through list of entities and calculate the force, acceleration and movement towards the entity
+		Vector2f oldVelocity = velocity;
+		for (Entity entity : entities) {
+			// If the current entity is this entity, skip to the next in the list
+			if (entity == this) continue;
+
+			// Get the force towards the current entity
+			Vector2f force = Physics.getForce(mass, entity.getMass(), getPosition2f(), entity.getPosition2f());
+			// Get the acceleration towards the current entity
+			Vector2f acceleration = Physics.getAcceleration(force, mass);
+			// Change this entity's velocity based off the acceleration and time passed
+			velocity.x += acceleration.x * delta;
+			velocity.y += acceleration.y * delta;
+		}
+
+		// Change this entity's position based off it's velocity and the time passed, converting from meters to AU
+		position.x += (velocity.x + oldVelocity.x) / 2 * delta / Physics.METERS_PER_AU;
+		position.z += (velocity.y + oldVelocity.y) / 2 * delta / Physics.METERS_PER_AU;
+
+		// If the rotation period has been set, rotate
+		if (rotationPeriod != 0)
+			increaseRotation(new Vector3f(0, (360f / rotationPeriod) * delta, 0));
+	}
+
 	public EntityType getType() {
 		return type;
+	}
+
+	public void setType(EntityType type) {
+		this.type = type;
 	}
 
 	public String getModelPath() {
@@ -129,12 +192,20 @@ public class Entity {
 		this.model = model;
 	}
 
+	public double getMass() {
+		return mass;
+	}
+
+	public void setMass(double mass) {
+		this.mass = mass;
+	}
+
 	public Vector3f getPosition3f() {
 		return position;
 	}
 
 	public Vector2f getPosition2f() {
-		return new Vector2f(position.x, position.y);
+		return new Vector2f(position.x, position.z);
 	}
 
 	public void setPosition(Vector3f position) {
@@ -143,7 +214,15 @@ public class Entity {
 
 	public void setPosition(Vector2f position) {
 		this.position.x = position.x;
-		this.position.y = position.y;
+		this.position.z = position.y;
+	}
+
+	public Vector2f getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector2f velocity) {
+		this.velocity = velocity;
 	}
 
 	public Vector3f getRotation() {
@@ -166,6 +245,22 @@ public class Entity {
 		this.scale.x = scale;
 		this.scale.y = scale;
 		this.scale.z = scale;
+	}
+
+	public int getRotationPeriod() {
+		return rotationPeriod;
+	}
+
+	public void setRotationPeriod(int rotationPeriod) {
+		this.rotationPeriod = rotationPeriod;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
